@@ -1,0 +1,131 @@
+import { Button } from '@/components/ui/button';
+import { TabsContent } from '@/components/ui/tabs';
+import { ContributorList } from '@/features/contributors/contributor-list';
+import { ProjectPageTabs } from '@/features/projects/project-page-tabs';
+import { getProjectById } from '@/features/projects/queries';
+import { type Metadata } from 'next';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+
+import { PendingPayments } from '@/features/insights/pending-payments';
+import { QuickStatistics } from '@/features/insights/quick-statistics';
+import { RecentPayments } from '@/features/insights/recent-payments';
+import { TopContributors } from '@/features/insights/top-contributors';
+import { PaymentsList } from '@/features/payments/payments-list';
+import { ProjectIcon } from '@/features/projects/project-icon';
+import { cache, Suspense } from 'react';
+
+const cachedProject = cache(getProjectById);
+
+interface PageProps {
+  params: Promise<{ projectId: string }>;
+  searchParams: Promise<{ tab?: string; c?: string; date?: string }>;
+}
+
+export const generateMetadata = async ({
+  params,
+}: PageProps): Promise<Metadata> => {
+  const pageParams = await params;
+
+  const { project } = await cachedProject({ projectId: pageParams.projectId });
+
+  return {
+    title: project?.title,
+  };
+};
+
+async function ProjectContributorsPage({ params, searchParams }: PageProps) {
+  const pageParams = await params;
+  const pageSearchParams = await searchParams;
+
+  const { project, paymentDateOptions, quickStatistics, topContributors } =
+    await cachedProject({
+      projectId: pageParams.projectId,
+      c: pageSearchParams.c,
+      date: pageSearchParams.date,
+    });
+
+  if (!project) return notFound();
+
+  return (
+    <div className="max-w-7xl mx-auto p-4 space-y-4">
+      {/* breadcrumb */}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/projects">Projects</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{project.title}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
+      {/* top bar */}
+      <div className="flex items-center gap-4">
+        <ProjectIcon iconName={project.icon} color={project.color} />
+        <div>
+          <h1 className="font-semibold">{project.title}</h1>
+          <p className="text-muted-foreground text-sm">{project.description}</p>
+        </div>
+        <div className="ml-auto">
+          <Button variant="secondary" asChild>
+            <Link
+              href={{
+                pathname: `/projects/${project.id}`,
+                query: { tab: 'edit' },
+              }}
+            >
+              Update Project
+            </Link>
+          </Button>
+        </div>
+      </div>
+      {/* tabs */}
+      <Suspense>
+        <ProjectPageTabs key={pageSearchParams.tab}>
+          <TabsContent value="insights" className="py-2 space-y-4">
+            <QuickStatistics {...quickStatistics} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+              <TopContributors
+                project={project}
+                topContributors={topContributors}
+              />
+              <div className="space-y-4">
+                <RecentPayments paymentSchedules={project.paymentSchedules} />
+                <PendingPayments paymentSchedules={project.paymentSchedules} />
+              </div>
+            </div>
+          </TabsContent>
+          <TabsContent value="contributors" className="py-2">
+            <ContributorList
+              projectTitle={project.title}
+              contributors={project.contributors}
+            />
+          </TabsContent>
+          <TabsContent value="payment-tracking" className="py-2">
+            <PaymentsList
+              projectName={project.title}
+              paymentDateOptions={paymentDateOptions}
+              paymentSchedules={project.paymentSchedules}
+            />
+          </TabsContent>
+        </ProjectPageTabs>
+      </Suspense>
+    </div>
+  );
+}
+
+export default ProjectContributorsPage;

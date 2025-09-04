@@ -1,0 +1,110 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProjectStatus {
+  INACTIVE
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum ContributorStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum PaymentMethod {
+  UNPAID
+  CASH
+  GCASH
+  BANK_TRANSFER
+}
+
+model Project {
+  id String @id @default(cuid())
+
+  userId String // clerk user id
+
+  title       String
+  description String
+
+  targetAmount              Float
+  defaultContributionAmount Float
+  paymentDay                Int // like 1,2,15,30 of every month
+
+  icon  String // icon name
+  color String // accent/background color
+
+  startDate DateTime
+  endDate   DateTime
+
+  status ProjectStatus @default(IN_PROGRESS)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contributors     Contributor[]
+  paymentSchedules PaymentSchedule[]
+
+  @@unique([userId, title])
+  @@index([userId])
+}
+
+model Contributor {
+  id String @id @default(cuid())
+
+  projectId String
+  project   Project @relation(references: [id], fields: [projectId], onDelete: Cascade)
+
+  name               String
+  contributionAmount Float
+  status             ContributorStatus @default(ACTIVE)
+  email              String?
+  phoneNumber        String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  paymentSchedules PaymentSchedule[]
+
+  @@unique([projectId, name])
+  @@index([projectId])
+}
+
+model PaymentSchedule {
+  id String @id @default(cuid())
+
+  projectId String
+  project   Project @relation(references: [id], fields: [projectId], onDelete: Cascade)
+
+  contributorId String
+  contributor   Contributor @relation(references: [id], fields: [contributorId])
+
+  actualAmountPaid Float @default(0)
+  amountToPay      Float // should match the contributor's contributionAmount
+
+  paymentDate          DateTime?
+  scheduledPaymentDate DateTime // expected date of payment
+
+  proofOfPayment String? // an image uploaded e.g. receipts, screenshots, etc.
+  paymentMethod  PaymentMethod @default(UNPAID)
+  note           String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([projectId])
+  @@index([contributorId])
+}
