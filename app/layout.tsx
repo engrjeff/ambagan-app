@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { app } from '@/lib/config';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import NextTopLoader from 'nextjs-toploader';
 import './globals.css';
 
 const geistSans = Geist({
@@ -24,6 +25,17 @@ export const metadata: Metadata = {
     default: app.title,
   },
   description: app.description,
+  openGraph: {
+    title: app.title,
+    images: [
+      {
+        url: app.ogImageUrl,
+        alt: app.title,
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -43,6 +55,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <NextTopLoader color={app.primaryColor} />
             <div className="relative overflow-hidden flex flex-col min-h-screen">
               <Header />
               <main className="flex-1 py-4">{children}</main>
