@@ -8,15 +8,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-const colors = [
-  { value: '#dc2626', name: 'Red', className: 'bg-red-600' },
-  { value: '#2563eb', name: 'Blue', className: 'bg-blue-600' },
-  { value: '#16a34a', name: 'Green', className: 'bg-green-600' },
-  { value: '#ca8a04', name: 'Yellow', className: 'bg-yellow-600' },
-  { value: '#7c3aed', name: 'Violet', className: 'bg-violet-600' },
-  { value: '#db2777', name: 'Pink', className: 'bg-pink-600' },
-  { value: '#ea580c', name: 'Orange', className: 'bg-orange-600' },
-  { value: '#0891b2', name: 'Cyan', className: 'bg-cyan-600' },
+export const colors = [
+  { value: '#93c5fd', name: 'Blue', className: 'bg-blue-300' },
+  { value: '#86efac', name: 'Green', className: 'bg-green-300' },
+  { value: '#fde047', name: 'Yellow', className: 'bg-yellow-300' },
+  { value: '#c4b5fd', name: 'Violet', className: 'bg-violet-300' },
+  { value: '#f9a8d4', name: 'Pink', className: 'bg-pink-300' },
+  { value: '#fdba74', name: 'Orange', className: 'bg-orange-300' },
+  { value: '#67e8f9', name: 'Cyan', className: 'bg-cyan-300' },
 ];
 
 interface ColorSelectProps {
