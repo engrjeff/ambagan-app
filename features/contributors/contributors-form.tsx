@@ -321,7 +321,7 @@ function ContributorsForm({
               onClick={() => {
                 contributorsFields.prepend({
                   name: '',
-                  contributionAmount: 0.0,
+                  contributionAmount: project.defaultContributionAmount,
                   email: '',
                   phoneNumber: '',
                 });
