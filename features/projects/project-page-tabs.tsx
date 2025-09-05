@@ -18,7 +18,7 @@ const projectPages = [
     label: 'Payment Tracking',
   },
   {
-    id: 'edit',
+    id: 'settings',
     label: 'Settings',
   },
 ];
