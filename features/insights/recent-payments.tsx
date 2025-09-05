@@ -12,10 +12,21 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { isBefore } from 'date-fns';
-import { PackageIcon } from 'lucide-react';
+import { ChevronRightIcon, PackageIcon } from 'lucide-react';
 import Link from 'next/link';
+import { PaymentDetailsContent } from '../payments/payment-details-content';
 
 export function RecentPayments({
   paymentSchedules,
@@ -52,21 +63,9 @@ export function RecentPayments({
       <CardContent>
         {hasRecentPayments ? (
           <ul className="space-y-2">
-            {recentPayments.slice(0, 5).map((p) => (
-              <li key={p.contributorId}>
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="font-semibold text-sm">
-                      {p.contributor.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {formatDate(p.paymentDate!.toISOString())}
-                    </p>
-                  </div>
-                  <p className="text-sm text-green-500">
-                    +{formatCurrency(p.actualAmountPaid)}
-                  </p>
-                </div>
+            {recentPayments.slice(0, 5).map((payment) => (
+              <li key={payment.contributorId}>
+                <RecentPaymentItem payment={payment} />
               </li>
             ))}
           </ul>
@@ -78,5 +77,46 @@ export function RecentPayments({
         )}
       </CardContent>
     </Card>
+  );
+}
+
+function RecentPaymentItem({
+  payment,
+}: {
+  payment: PaymentSchedule & { contributor: Contributor };
+}) {
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <div className="flex items-center gap-4 group cursor-pointer hover:bg-accent px-2 py-0.5 rounded-md">
+          <div>
+            <p className="font-semibold text-sm">{payment.contributor.name}</p>
+            <p className="text-xs text-muted-foreground">
+              {formatDate(payment.paymentDate!.toISOString())}
+            </p>
+          </div>
+          <p className="text-sm text-green-500 ml-auto">
+            +{formatCurrency(payment.actualAmountPaid)}
+          </p>
+          <ChevronRightIcon className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+        </div>
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Payment Details</SheetTitle>
+          <SheetDescription>
+            Showing the payment details of {payment.contributor.name}
+          </SheetDescription>
+        </SheetHeader>
+
+        <PaymentDetailsContent payment={payment} />
+
+        <SheetFooter>
+          <SheetClose asChild>
+            <Button type="button">Close</Button>
+          </SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   );
 }
