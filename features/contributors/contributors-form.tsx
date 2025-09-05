@@ -185,7 +185,7 @@ function ContributorsForm({
         onSubmit={form.handleSubmit(onSubmit, onFormError)}
       >
         <fieldset disabled={isBusy} className="disabled:opacity-90">
-          <ScrollArea className="h-[400px] p-4">
+          <ScrollArea className="h-[400px] p-4 max-w-full">
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-background">

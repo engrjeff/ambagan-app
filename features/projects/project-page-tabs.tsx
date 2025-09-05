@@ -23,7 +23,7 @@ const projectPages = [
   },
   {
     id: 'payment-tracking',
-    label: 'Payment Tracking',
+    label: 'Payments',
     Icon: PhilippinePesoIcon,
   },
   {
@@ -48,12 +48,21 @@ export function ProjectPageTabs({ children }: { children: ReactNode }) {
         router.push(`/projects/${params.projectId}?tab=${value}`)
       }
     >
-      <TabsList className="text-foreground h-auto gap-2 rounded-none border-b bg-transparent px-0 py-1">
+      <TabsList className="text-foreground w-full md:w-min h-auto gap-2 rounded-none border-b bg-transparent px-0 py-1">
+        {projectPages.slice(0, 3).map((page) => (
+          <TabsTrigger
+            key={page.id}
+            value={page.id}
+            className="hover:bg-accent md:hidden dark:data-[state=active]:text-primary dark:data-[state=active]:border-none hover:text-foreground data-[state=active]:after:bg-primary data-[state=active]:hover:bg-accent relative after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5 dark:data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+          >
+            <page.Icon className="hidden" /> {page.label}
+          </TabsTrigger>
+        ))}
         {projectPages.map((page) => (
           <TabsTrigger
             key={page.id}
             value={page.id}
-            className="hover:bg-accent dark:data-[state=active]:text-primary dark:data-[state=active]:border-none hover:text-foreground data-[state=active]:after:bg-primary data-[state=active]:hover:bg-accent relative after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5 dark:data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+            className="hover:bg-accent hidden md:inline-flex dark:data-[state=active]:text-primary dark:data-[state=active]:border-none hover:text-foreground data-[state=active]:after:bg-primary data-[state=active]:hover:bg-accent relative after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5 dark:data-[state=active]:bg-transparent data-[state=active]:shadow-none"
           >
             <page.Icon className="hidden" /> {page.label}
           </TabsTrigger>

@@ -2,7 +2,6 @@
 
 import { PaymentFrequency } from '@/app/generated/prisma';
 import { Button } from '@/components/ui/button';
-import { DialogFooter } from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -423,14 +422,14 @@ export function ProjectForm({ initialData }: { initialData?: ProjectInputs }) {
             />
           </div>
 
-          <DialogFooter className="pt-6">
-            <Button type="button" variant="outline" onClick={handleClose}>
+          <div className="py-6 flex justify-end items-center gap-4">
+            <Button type="button" variant="ghost" onClick={handleClose}>
               Cancel
             </Button>
             <SubmitButton loading={isBusy}>
               {initialData ? 'Update Project' : 'Create Project'}
             </SubmitButton>
-          </DialogFooter>
+          </div>
         </fieldset>
       </form>
     </Form>

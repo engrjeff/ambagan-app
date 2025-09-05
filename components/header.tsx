@@ -9,11 +9,12 @@ import {
 } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Separator } from './ui/separator';
 
 export function Header() {
   return (
     <header className="border-b">
-      <div className="flex max-w-6xl w-full mx-auto h-16 items-center justify-between gap-4 px-4">
+      <div className="flex max-w-6xl w-full mx-auto h-16 items-center justify-between gap-4 p-4">
         <Link href="/" className="flex items-center gap-x-1">
           <Image
             src="/icons/logo.svg"
@@ -24,7 +25,7 @@ export function Header() {
           />
           <span className="font-semibold">{app.title}</span>
         </Link>
-        <div className="flex items-center gap-x-4">
+        <div className="flex h-full items-center gap-2">
           <SignedOut>
             <SignInButton>
               <Button variant="ghost">Sign in</Button>
@@ -37,6 +38,7 @@ export function Header() {
             <Button asChild>
               <Link href="/projects">My Projects</Link>
             </Button>
+            <Separator orientation="vertical" className="h-full" />
             <UserButton />
           </SignedIn>
         </div>

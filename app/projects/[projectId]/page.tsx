@@ -16,7 +16,7 @@ import { PaymentsList } from '@/features/payments/payments-list';
 import { ProjectDeleteDialog } from '@/features/projects/project-delete-dialog';
 import { ProjectEditForm } from '@/features/projects/project-edit-form';
 import { ProjectIcon } from '@/features/projects/project-icon';
-import { ArrowLeftIcon } from 'lucide-react';
+import { ArrowLeftIcon, PencilIcon, PenLineIcon } from 'lucide-react';
 import { cache, Suspense } from 'react';
 
 const cachedProject = cache(getProjectById);
@@ -73,7 +73,24 @@ async function ProjectContributorsPage({ params, searchParams }: PageProps) {
       <div className="flex items-center gap-4">
         <ProjectIcon iconName={project.icon} color={project.color} />
         <div>
-          <h1 className="font-semibold">{project.title}</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="font-semibold">{project.title}</h1>
+            <Button
+              variant="ghost"
+              size="icon"
+              asChild
+              aria-label="go to Project settings"
+            >
+              <Link
+                href={{
+                  pathname: `/projects/${project.id}`,
+                  query: { tab: 'settings' },
+                }}
+              >
+                <PenLineIcon />
+              </Link>
+            </Button>
+          </div>
           <p className="text-muted-foreground text-sm">{project.description}</p>
         </div>
         <div className="ml-auto hidden md:block">
@@ -84,7 +101,7 @@ async function ProjectContributorsPage({ params, searchParams }: PageProps) {
                 query: { tab: 'settings' },
               }}
             >
-              Update Project
+              <PencilIcon /> Update
             </Link>
           </Button>
         </div>

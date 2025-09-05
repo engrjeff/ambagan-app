@@ -8,17 +8,17 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <div className="h-full flex pt-40 flex-col gap-6 items-center justify-center">
+    <div className="flex h-[80vh] px-4 flex-col gap-6 items-center pt-20">
       <Spotlight />
       <div className="text-center flex flex-col items-center">
         <Image
           unoptimized
           src="/icons/logo.svg"
-          width={40}
-          height={40}
+          width={56}
+          height={56}
           alt={app.title}
         />
-        <h1 className="text-4xl pb-2 md:text-7xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50">
+        <h1 className="text-6xl pb-2 md:text-8xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50">
           {app.title}
         </h1>
         <p className="mt-4 font-normal text-lg text-neutral-300 text-center mx-auto">
@@ -36,7 +36,7 @@ export default function Home() {
         </SignedOut>
 
         <SignedIn>
-          <Button asChild>
+          <Button asChild size="lg">
             <Link href="/projects">
               My Projects <ArrowRightIcon />
             </Link>

@@ -13,12 +13,12 @@ async function ProjectsPage() {
   const { projects } = await getProjects();
 
   return (
-    <div className="max-w-6xl mx-auto p-4 space-y-6">
+    <div className="max-w-6xl mx-auto px-4 space-y-6">
       {/* top bar */}
       <div className="flex items-center">
         <div>
           <h1 className="font-semibold text-lg">Projects</h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground hidden md:block">
             View and manage your projects here.
           </p>
         </div>

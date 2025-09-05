@@ -210,7 +210,7 @@ export function ProjectEditForm({ project }: { project: Project }) {
             </CardContent>
 
             <CardFooter className="pt-6 border-t justify-end gap-4">
-              <Button type="button" variant="outline" onClick={handleReset}>
+              <Button type="button" variant="ghost" onClick={handleReset}>
                 Reset
               </Button>
               <SubmitButton loading={isBusy}>Save Changes</SubmitButton>
