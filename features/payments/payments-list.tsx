@@ -101,7 +101,13 @@ export function PaymentsList({
                   title="Payment Method"
                 />
               </TableHead>
-              <TableHead className="text-center">Payment Date</TableHead>
+              <TableHead className="text-center">
+                <SortLink
+                  className="justify-center"
+                  sortValue="paymentDate"
+                  title="Payment Date"
+                />
+              </TableHead>
               <TableHead className="text-center">Schedule Date</TableHead>
               <TableHead className="text-center">Actions</TableHead>
             </TableRow>
