@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <div className="h-[30rem] overflow-hidden flex flex-col gap-6 items-center justify-center">
+    <div className="h-[90vh] overflow-hidden flex flex-col gap-6 items-center justify-center">
       <Spotlight />
       <div>
         <h1 className="text-4xl pb-2 md:text-7xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50">

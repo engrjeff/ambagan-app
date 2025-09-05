@@ -35,7 +35,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" className="h-full" suppressHydrationWarning>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} flex min-h-full flex-col antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} min-h-full antialiased`}
         >
           <ThemeProvider
             attribute="class"
@@ -43,11 +43,11 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Header />
-            <main className="flex-1 py-4 relative overflow-hidden">
-              {children}
-            </main>
-            <Footer />
+            <div className="relative overflow-hidden flex flex-col min-h-screen">
+              <Header />
+              <main className="flex-1 py-4">{children}</main>
+              <Footer />
+            </div>
             <Toaster richColors />
           </ThemeProvider>
         </body>
