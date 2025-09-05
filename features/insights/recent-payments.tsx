@@ -6,6 +6,7 @@ import {
 import { Button } from '@/components/ui/button';
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
@@ -34,19 +35,19 @@ export function RecentPayments({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center justify-between gap-2">
-          <h2>Recent Payments</h2>
-          {hasRecentPayments ? (
-            <Button asChild variant="link" size="sm" className="px-0">
+        <CardTitle>Recent Payments</CardTitle>
+        <CardDescription>for {monthOf}</CardDescription>
+        {hasRecentPayments ? (
+          <CardAction>
+            <Button asChild variant="link" size="sm" className="p-0">
               <Link
                 href={`/projects/${recentPayments[0]?.projectId}?tab=payment-tracking&sort=paymentDate&order=desc`}
               >
                 View All
               </Link>
             </Button>
-          ) : null}
-        </CardTitle>
-        <CardDescription>for {monthOf}</CardDescription>
+          </CardAction>
+        ) : null}
       </CardHeader>
       <CardContent>
         {hasRecentPayments ? (

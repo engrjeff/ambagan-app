@@ -6,6 +6,7 @@ import {
 import { Button } from '@/components/ui/button';
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
@@ -32,9 +33,11 @@ export function PendingPayments({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center justify-between gap-2">
-          <h2>Pending Payments</h2>
-          {hasPendingPayments ? (
+        <CardTitle>Pending Payments</CardTitle>
+        <CardDescription>due on {monthOf}</CardDescription>
+
+        {hasPendingPayments ? (
+          <CardAction>
             <Button asChild variant="link" size="sm" className="px-0">
               <Link
                 href={`/projects/${pendingPayments[0]?.projectId}?tab=payment-tracking&status=UNPAID`}
@@ -42,9 +45,8 @@ export function PendingPayments({
                 View All
               </Link>
             </Button>
-          ) : null}
-        </CardTitle>
-        <CardDescription>due on {monthOf}</CardDescription>
+          </CardAction>
+        ) : null}
       </CardHeader>
       <CardContent>
         {hasPendingPayments ? (

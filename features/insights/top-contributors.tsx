@@ -2,6 +2,7 @@ import { PaymentSchedule, Project } from '@/app/generated/prisma';
 import { Button } from '@/components/ui/button';
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
@@ -71,47 +72,44 @@ export function TopContributors({
       <Separator />
       {/* top contributors */}
       <CardHeader>
-        <CardTitle className="flex items-center justify-between gap-2">
-          <h2>Top Contributors</h2>
+        <CardTitle>Top Contributors</CardTitle>
+
+        <CardAction>
           <Button asChild variant="link" size="sm" className="px-0">
             <Link href={`/projects/${project.id}?tab=contributors`}>
               View All
             </Link>
           </Button>
-        </CardTitle>
+        </CardAction>
       </CardHeader>
       <CardContent>
-        <div>
-          {topContributors.length > 0 ? (
-            <ul className="space-y-2">
-              {topContributors.slice(0, 5).map((c) => (
-                <li key={c.id}>
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <p className="font-semibold text-sm">{c.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {formatCurrency(c.contributionAmount)}/monthly
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-green-500">
-                        {formatCurrency(c.totalPaid)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Total Paid
-                      </p>
-                    </div>
+        {topContributors.length > 0 ? (
+          <ul className="space-y-2">
+            {topContributors.slice(0, 5).map((c) => (
+              <li key={c.id}>
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="font-semibold text-sm">{c.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatCurrency(c.contributionAmount)}/monthly
+                    </p>
                   </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="text-center text-muted-foreground h-[200px] flex gap-4 flex-col items-center justify-center">
-              <PackageIcon className="size-5" />
-              <p className="text-sm">No payments made yet.</p>
-            </div>
-          )}
-        </div>
+                  <div>
+                    <p className="text-sm text-green-500">
+                      {formatCurrency(c.totalPaid)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">Total Paid</p>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="text-center text-muted-foreground h-[200px] flex gap-4 flex-col items-center justify-center">
+            <PackageIcon className="size-5" />
+            <p className="text-sm">No payments made yet.</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
