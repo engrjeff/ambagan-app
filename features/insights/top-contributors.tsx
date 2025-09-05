@@ -1,4 +1,5 @@
 import { PaymentSchedule, Project } from '@/app/generated/prisma';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -10,6 +11,7 @@ import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { CalendarIcon, PackageIcon } from 'lucide-react';
+import Link from 'next/link';
 
 export function TopContributors({
   project,
@@ -69,8 +71,13 @@ export function TopContributors({
       <Separator />
       {/* top contributors */}
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          Top Contributors
+        <CardTitle className="flex items-center justify-between gap-2">
+          <h2>Top Contributors</h2>
+          <Button asChild variant="link" size="sm" className="px-0">
+            <Link href={`/projects/${project.id}?tab=contributors`}>
+              View All
+            </Link>
+          </Button>
         </CardTitle>
       </CardHeader>
       <CardContent>

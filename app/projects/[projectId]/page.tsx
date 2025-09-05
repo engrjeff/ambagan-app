@@ -34,6 +34,7 @@ interface PageProps {
     date?: string;
     sort?: string;
     order?: 'asc' | 'desc';
+    status?: string;
   }>;
 }
 

@@ -41,15 +41,16 @@ export function PaymentsList({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  function handleDateChange(e: ChangeEvent<HTMLSelectElement>) {
+  function handleFilterChange(e: ChangeEvent<HTMLSelectElement>) {
     const newParams = new URLSearchParams(searchParams);
 
+    const name = e.currentTarget.name;
     const value = e.currentTarget.value;
 
     if (value.trim()) {
-      newParams.set('date', value.trim());
+      newParams.set(name, value.trim());
     } else {
-      newParams.delete(value);
+      newParams.delete(name);
     }
 
     // Reset to first page when searching
@@ -64,19 +65,41 @@ export function PaymentsList({
     <>
       <div className="flex items-center gap-4 justify-between">
         <SearchField paramName="c" placeholder="Search contributors" />
-        <SelectNative
-          defaultValue={
-            searchParams.get('date') ?? paymentDateOptions.at(0)?.value
-          }
-          onChange={handleDateChange}
-        >
-          <option value="">Select date</option>
-          {paymentDateOptions.map((d) => (
-            <option key={d.id} value={d.value}>
-              {d.label}
-            </option>
-          ))}
-        </SelectNative>
+        <div className="flex items-center gap-4 ml-auto">
+          <SelectNative
+            aria-label="filter by payment status"
+            name="status"
+            onChange={handleFilterChange}
+            defaultValue={searchParams.get('status') ?? ''}
+          >
+            <option value="">Status</option>
+            {[
+              PaymentMethod.UNPAID,
+              PaymentMethod.CASH,
+              PaymentMethod.GCASH,
+              PaymentMethod.BANK_TRANSFER,
+            ].map((d) => (
+              <option key={d} value={d}>
+                {d.replace('_', ' ')}
+              </option>
+            ))}
+          </SelectNative>
+          <SelectNative
+            defaultValue={
+              searchParams.get('date') ?? paymentDateOptions.at(0)?.value
+            }
+            name="date"
+            aria-label="filter by schedule date"
+            onChange={handleFilterChange}
+          >
+            <option value="">Select date</option>
+            {paymentDateOptions.map((d) => (
+              <option key={d.id} value={d.value}>
+                {d.label}
+              </option>
+            ))}
+          </SelectNative>
+        </div>
       </div>
       <div className="border rounded-md my-4 pb-4 max-h-[60vh] overflow-x-auto">
         <Table>

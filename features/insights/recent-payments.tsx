@@ -3,6 +3,7 @@ import {
   PaymentMethod,
   PaymentSchedule,
 } from '@/app/generated/prisma';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -11,7 +12,9 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { formatCurrency, formatDate } from '@/lib/utils';
+import { isBefore } from 'date-fns';
 import { PackageIcon } from 'lucide-react';
+import Link from 'next/link';
 
 export function RecentPayments({
   paymentSchedules,
@@ -22,16 +25,27 @@ export function RecentPayments({
     ? formatDate(paymentSchedules[0].scheduledPaymentDate.toISOString())
     : 'No payments made yet';
 
-  const recentPayments = paymentSchedules.filter(
-    (p) => p.paymentMethod !== PaymentMethod.UNPAID
-  );
+  const recentPayments = paymentSchedules
+    .filter((p) => p.paymentMethod !== PaymentMethod.UNPAID)
+    .sort((a, b) => (isBefore(a.paymentDate!, b.paymentDate!) ? 1 : -1));
 
   const hasRecentPayments = recentPayments.length > 0;
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Recent Payments</CardTitle>
+        <CardTitle className="flex items-center justify-between gap-2">
+          <h2>Recent Payments</h2>
+          {hasRecentPayments ? (
+            <Button asChild variant="link" size="sm" className="px-0">
+              <Link
+                href={`/projects/${recentPayments[0]?.projectId}?tab=payment-tracking&sort=paymentDate&order=desc`}
+              >
+                View All
+              </Link>
+            </Button>
+          ) : null}
+        </CardTitle>
         <CardDescription>for {monthOf}</CardDescription>
       </CardHeader>
       <CardContent>

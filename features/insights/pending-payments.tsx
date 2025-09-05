@@ -3,6 +3,7 @@ import {
   PaymentMethod,
   PaymentSchedule,
 } from '@/app/generated/prisma';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -11,6 +12,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { formatCurrency, formatDate } from '@/lib/utils';
+import Link from 'next/link';
 
 export function PendingPayments({
   paymentSchedules,
@@ -30,7 +32,18 @@ export function PendingPayments({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Pending Payments</CardTitle>
+        <CardTitle className="flex items-center justify-between gap-2">
+          <h2>Pending Payments</h2>
+          {hasPendingPayments ? (
+            <Button asChild variant="link" size="sm" className="px-0">
+              <Link
+                href={`/projects/${pendingPayments[0]?.projectId}?tab=payment-tracking&status=UNPAID`}
+              >
+                View All
+              </Link>
+            </Button>
+          ) : null}
+        </CardTitle>
         <CardDescription>due on {monthOf}</CardDescription>
       </CardHeader>
       <CardContent>

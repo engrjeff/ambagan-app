@@ -45,6 +45,7 @@ interface GetProjectByIdArgs {
   date?: string; // schedule
   sort?: string;
   order?: 'asc' | 'desc';
+  status?: string;
 }
 
 function getContributorSort(sortBy?: string, order?: 'asc' | 'desc') {
@@ -88,6 +89,21 @@ function getPaymentScheduleSort(sortBy?: string, order?: 'asc' | 'desc') {
   let sortByValue = sortBy ? sortBy : 'name';
   let sortOrderValue = order ? order : 'asc';
 
+  if (sortByValue === 'paymentDate')
+    return [
+      {
+        paymentDate: {
+          sort: order as 'asc' | 'desc',
+          nulls: 'last' as 'first' | 'last',
+        },
+      },
+      {
+        contributor: {
+          name: 'desc' as 'asc' | 'desc',
+        },
+      },
+    ];
+
   return {
     [sortByValue]: sortOrderValue,
   };
@@ -99,6 +115,7 @@ export async function getProjectById({
   date,
   sort,
   order,
+  status,
 }: GetProjectByIdArgs) {
   // for payment schedule options
   const paymentSchedules = await prisma.paymentSchedule.findMany({
@@ -132,6 +149,8 @@ export async function getProjectById({
               mode: 'insensitive',
             },
           },
+
+          paymentMethod: status ? (status as PaymentMethod) : undefined,
         },
         include: {
           contributor: true,
