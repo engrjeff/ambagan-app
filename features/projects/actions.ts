@@ -3,7 +3,7 @@
 import { prisma } from '@/lib/prisma';
 import { authActionClient } from '@/lib/safe-action';
 import { revalidatePath } from 'next/cache';
-import { projectEditSchema, projectSchema } from './schema';
+import { projectEditSchema, projectIdSchema, projectSchema } from './schema';
 
 export const createProject = authActionClient
   .metadata({ actionName: 'createProject' })
@@ -55,5 +55,24 @@ export const updateProject = authActionClient
 
     return {
       project,
+    };
+  });
+
+export const deleteProject = authActionClient
+  .metadata({ actionName: 'deleteProject' })
+  .inputSchema(projectIdSchema)
+  .action(async ({ parsedInput, ctx: { user } }) => {
+    if (!user?.userId) throw new Error('Session not found.');
+
+    const { id } = parsedInput;
+
+    const result = await prisma.project.delete({
+      where: { id },
+    });
+
+    revalidatePath('/projects');
+
+    return {
+      success: true,
     };
   });

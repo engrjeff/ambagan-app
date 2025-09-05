@@ -7,22 +7,16 @@ import { type Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-
+import { Separator } from '@/components/ui/separator';
 import { PendingPayments } from '@/features/insights/pending-payments';
 import { QuickStatistics } from '@/features/insights/quick-statistics';
 import { RecentPayments } from '@/features/insights/recent-payments';
 import { TopContributors } from '@/features/insights/top-contributors';
 import { PaymentsList } from '@/features/payments/payments-list';
+import { ProjectDeleteDialog } from '@/features/projects/project-delete-dialog';
 import { ProjectEditForm } from '@/features/projects/project-edit-form';
 import { ProjectIcon } from '@/features/projects/project-icon';
+import { ArrowLeftIcon } from 'lucide-react';
 import { cache, Suspense } from 'react';
 
 const cachedProject = cache(getProjectById);
@@ -47,7 +41,7 @@ export const generateMetadata = async ({
   const { project } = await cachedProject({ projectId: pageParams.projectId });
 
   return {
-    title: project?.title,
+    title: project ? project?.title : 'Project Not Found',
   };
 };
 
@@ -64,22 +58,17 @@ async function ProjectContributorsPage({ params, searchParams }: PageProps) {
   if (!project) return notFound();
 
   return (
-    <div className="max-w-6xl mx-auto p-4 space-y-4">
-      {/* breadcrumb */}
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link href="/projects">Projects</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{project.title}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-
+    <div className="max-w-6xl mx-auto px-4 space-y-4">
+      <Button
+        size="sm"
+        variant="link"
+        className="text-foreground px-0 has-[>svg]:px-0"
+        asChild
+      >
+        <Link href="/projects">
+          <ArrowLeftIcon /> My Projects
+        </Link>
+      </Button>
       {/* top bar */}
       <div className="flex items-center gap-4">
         <ProjectIcon iconName={project.icon} color={project.color} />
@@ -129,9 +118,16 @@ async function ProjectContributorsPage({ params, searchParams }: PageProps) {
               paymentSchedules={project.paymentSchedules}
             />
           </TabsContent>
-          <TabsContent value="settings" className="py-2">
+          <TabsContent value="settings" className="py-2 space-y-6">
             <div className="max-w-md mx-auto">
               <ProjectEditForm project={project} />
+            </div>
+            <Separator />
+            <div className="max-w-md mx-auto">
+              <ProjectDeleteDialog
+                projectName={project.title}
+                projectId={project.id}
+              />
             </div>
           </TabsContent>
         </ProjectPageTabs>

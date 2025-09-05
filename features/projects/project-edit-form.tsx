@@ -27,7 +27,7 @@ import { useAction } from 'next-safe-action/hooks';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { updateProject } from './actions';
-import { ColorSelect } from './color-select';
+import { colors, ColorSelect } from './color-select';
 import { IconInput } from './icon-input';
 import { ProjectEditInputs, projectEditSchema } from './schema';
 
@@ -41,7 +41,7 @@ export function ProjectEditForm({ project }: { project: Project }) {
       targetAmount: project?.targetAmount ?? 0,
       defaultContributionAmount: project?.defaultContributionAmount ?? 0,
       icon: project?.icon ?? 'home',
-      color: project?.color ?? '#16a34a',
+      color: project?.color ?? colors[0].value,
     },
   });
 

@@ -25,7 +25,7 @@ import { useState } from 'react';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { createProject } from './actions';
-import { ColorSelect } from './color-select';
+import { colors, ColorSelect } from './color-select';
 import { IconInput } from './icon-input';
 import { projectSchema, type ProjectInputs } from './schema';
 
@@ -41,7 +41,7 @@ export function ProjectForm({ initialData }: { initialData?: ProjectInputs }) {
       paymentFrequency:
         initialData?.paymentFrequency ?? PaymentFrequency.MONTHLY,
       icon: initialData?.icon ?? 'home',
-      color: initialData?.color ?? '#16a34a',
+      color: initialData?.color ?? colors[0].value,
       startDate: initialData?.startDate ?? '',
       endDate: initialData?.endDate ?? '',
     },
