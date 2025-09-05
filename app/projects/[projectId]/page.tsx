@@ -87,7 +87,7 @@ async function ProjectContributorsPage({ params, searchParams }: PageProps) {
           <h1 className="font-semibold">{project.title}</h1>
           <p className="text-muted-foreground text-sm">{project.description}</p>
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto hidden md:block">
           <Button variant="secondary" asChild>
             <Link
               href={{

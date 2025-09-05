@@ -91,14 +91,19 @@ export function TopContributors({
                   <div>
                     <p className="font-semibold text-sm">{c.name}</p>
                     <p className="text-xs text-muted-foreground">
-                      {formatCurrency(c.contributionAmount)}/monthly
+                      <span className="font-mono">
+                        {formatCurrency(c.contributionAmount)}
+                      </span>{' '}
+                      / month
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-green-500">
+                    <p className="text-sm text-green-500 font-mono">
                       {formatCurrency(c.totalPaid)}
                     </p>
-                    <p className="text-xs text-muted-foreground">Total Paid</p>
+                    <p className="text-xs text-muted-foreground text-right">
+                      Total Paid
+                    </p>
                   </div>
                 </div>
               </li>

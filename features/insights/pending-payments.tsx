@@ -59,10 +59,10 @@ export function PendingPayments({
                       {p.contributor.name}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      due {formatDate(p.scheduledPaymentDate!.toISOString())}
+                      due on {formatDate(p.scheduledPaymentDate!.toISOString())}
                     </p>
                   </div>
-                  <p className="text-sm text-red-400">
+                  <p className="text-sm text-red-400 font-mono">
                     -{formatCurrency(p.contributor.contributionAmount)}
                   </p>
                 </div>

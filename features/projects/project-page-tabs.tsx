@@ -55,7 +55,7 @@ export function ProjectPageTabs({ children }: { children: ReactNode }) {
             value={page.id}
             className="hover:bg-accent dark:data-[state=active]:text-primary dark:data-[state=active]:border-none hover:text-foreground data-[state=active]:after:bg-primary data-[state=active]:hover:bg-accent relative after:absolute after:inset-x-0 after:bottom-0 after:-mb-1 after:h-0.5 dark:data-[state=active]:bg-transparent data-[state=active]:shadow-none"
           >
-            <page.Icon /> {page.label}
+            <page.Icon className="hidden" /> {page.label}
           </TabsTrigger>
         ))}
       </TabsList>

@@ -17,14 +17,14 @@ export function PaymentDetailsContent({
 
         <dd className="pb-3">
           <p className="text-xs text-muted-foreground">Committed Amount</p>
-          <p className="text-sm font-semibold">
+          <p className="text-sm font-semibold font-mono">
             {formatCurrency(payment.contributor.contributionAmount)}
           </p>
         </dd>
 
         <dd className="pb-3">
           <p className="text-xs text-muted-foreground">Amount Paid</p>
-          <p className="text-sm font-semibold text-green-500">
+          <p className="text-sm font-semibold text-green-500 font-mono">
             +{formatCurrency(payment.actualAmountPaid)}
           </p>
         </dd>

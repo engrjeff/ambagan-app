@@ -95,7 +95,7 @@ function RecentPaymentItem({
               {formatDate(payment.paymentDate!.toISOString())}
             </p>
           </div>
-          <p className="text-sm text-green-500 ml-auto">
+          <p className="text-sm text-green-500 ml-auto font-mono">
             +{formatCurrency(payment.actualAmountPaid)}
           </p>
           <ChevronRightIcon className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
