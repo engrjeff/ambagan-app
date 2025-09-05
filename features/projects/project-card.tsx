@@ -16,7 +16,7 @@ export function ProjectCard({
   project: Project & { totalAmountPaid: number; percentage: number };
 }) {
   return (
-    <Card className="bg-muted py-4 hover:bg-background">
+    <Card className="py-4 hover:bg-background">
       <div className="px-4 flex items-center gap-4">
         <ProjectIcon iconName={project.icon} color={project.color} />
         <div className="space-y-1.5">
@@ -49,8 +49,8 @@ export function ProjectCard({
           className="bg-white/10"
           indicatorColor={project.color}
         />
-        <p className="text-xs text-muted-foreground">
-          {project.percentage}% completed
+        <p className="text-xs text-muted-foreground font-mono">
+          {project.percentage.toFixed(1)}% completed
         </p>
       </CardContent>
     </Card>
