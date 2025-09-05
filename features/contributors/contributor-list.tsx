@@ -5,6 +5,7 @@ import {
   ContributorStatus,
   PaymentSchedule,
 } from '@/app/generated/prisma';
+import { SortLink } from '@/components/sort-link';
 import { Badge } from '@/components/ui/badge';
 import { SearchField } from '@/components/ui/search-field';
 import {
@@ -54,13 +55,21 @@ export function ContributorList({
           <TableCaption>
             A list of contributors for {projectTitle}.
           </TableCaption>
-          <TableHeader className="bg-muted">
-            <TableRow>
+          <TableHeader className="bg-card">
+            <TableRow className="hover:bg-transparent">
               <TableHead className="w-4 text-center">#</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead className="text-center">Last Payment Date</TableHead>
-              <TableHead className="text-right">Contribution</TableHead>
+              <TableHead>
+                <SortLink sortValue="name" title="Name" />
+              </TableHead>
+              <TableHead>
+                <SortLink
+                  className="justify-end -mr-4"
+                  sortValue="contributionAmount"
+                  title="Contribution"
+                />
+              </TableHead>
               <TableHead className="text-right">Total Paid</TableHead>
+              <TableHead className="text-center">Last Payment Date</TableHead>
               <TableHead className="text-center">Status</TableHead>
               <TableHead className="text-center">Actions</TableHead>
             </TableRow>
@@ -96,14 +105,14 @@ export function ContributorList({
                       </p>
                     </div>
                   </TableCell>
-                  <TableCell className="text-center">
-                    {getLastPaymentDate(contributor.paymentSchedules)}
-                  </TableCell>
                   <TableCell className="text-right font-mono">
                     {formatCurrency(contributor.contributionAmount)}
                   </TableCell>
                   <TableCell className="text-right font-mono">
                     {getTotalContributionsPaid(contributor.paymentSchedules)}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {getLastPaymentDate(contributor.paymentSchedules)}
                   </TableCell>
                   <TableCell className="text-center">
                     {contributor.status === ContributorStatus.ACTIVE ? (

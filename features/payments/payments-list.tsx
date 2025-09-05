@@ -6,6 +6,7 @@ import {
   PaymentSchedule,
 } from '@/app/generated/prisma';
 import { PaymentMethodBadge } from '@/components/payment-method-badge';
+import { SortLink } from '@/components/sort-link';
 import { Badge } from '@/components/ui/badge';
 import { SearchField } from '@/components/ui/search-field';
 import { SelectNative } from '@/components/ui/select-native';
@@ -80,14 +81,28 @@ export function PaymentsList({
       <div className="border rounded-md my-4 pb-4 max-h-[60vh] overflow-x-auto">
         <Table>
           <TableCaption>Payment history.</TableCaption>
-          <TableHeader className="bg-muted">
-            <TableRow>
+          <TableHeader className="bg-card">
+            <TableRow className="hover:bg-transparent">
               <TableHead className="w-4 text-center">#</TableHead>
-              <TableHead>Paid by</TableHead>
+              <TableHead>
+                <SortLink sortValue="paidBy" title="Paid by" />
+              </TableHead>
+              <TableHead>
+                <SortLink
+                  className="justify-end -mr-4"
+                  sortValue="actualAmountPaid"
+                  title="Amount Paid"
+                />
+              </TableHead>
+              <TableHead>
+                <SortLink
+                  className="justify-center"
+                  sortValue="paymentMethod"
+                  title="Payment Method"
+                />
+              </TableHead>
               <TableHead className="text-center">Payment Date</TableHead>
               <TableHead className="text-center">Schedule Date</TableHead>
-              <TableHead className="text-right">Amount Paid</TableHead>
-              <TableHead className="text-center">Payment Method</TableHead>
               <TableHead className="text-center">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -124,6 +139,14 @@ export function PaymentsList({
                       </p>
                     </div>
                   </TableCell>
+
+                  <TableCell className="text-right font-mono">
+                    {formatCurrency(payment.actualAmountPaid)}
+                  </TableCell>
+                  <TableCell className="text-center capitalize">
+                    <PaymentMethodBadge paymentMethod={payment.paymentMethod} />
+                  </TableCell>
+
                   <TableCell className="text-center">
                     {payment.paymentDate ? (
                       formatDate(payment.paymentDate.toISOString())
@@ -137,12 +160,6 @@ export function PaymentsList({
                   </TableCell>
                   <TableCell className="text-center">
                     {formatDate(payment.scheduledPaymentDate.toISOString())}
-                  </TableCell>
-                  <TableCell className="text-right font-mono">
-                    {formatCurrency(payment.actualAmountPaid)}
-                  </TableCell>
-                  <TableCell className="text-center capitalize">
-                    <PaymentMethodBadge paymentMethod={payment.paymentMethod} />
                   </TableCell>
                   <TableCell className="text-center space-x-3">
                     {payment.paymentMethod === PaymentMethod.UNPAID ? (

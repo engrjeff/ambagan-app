@@ -43,12 +43,62 @@ interface GetProjectByIdArgs {
   projectId: string;
   c?: string; // contributor name search
   date?: string; // schedule
+  sort?: string;
+  order?: 'asc' | 'desc';
+}
+
+function getContributorSort(sortBy?: string, order?: 'asc' | 'desc') {
+  const acceptedSortKeys = ['name', 'contributionAmount'];
+
+  if (sortBy && !acceptedSortKeys.includes(sortBy))
+    return { name: 'asc' as 'asc' | 'desc' };
+
+  let sortByValue = sortBy ? sortBy : 'name';
+  let sortOrderValue = order ? order : 'asc';
+
+  return {
+    [sortByValue]: sortOrderValue,
+  };
+}
+
+function getPaymentScheduleSort(sortBy?: string, order?: 'asc' | 'desc') {
+  if (!sortBy && !order)
+    return {
+      contributor: {
+        name: 'asc' as 'asc' | 'desc',
+      },
+    };
+
+  if (sortBy === 'paidBy')
+    return {
+      contributor: {
+        name: order ?? 'asc',
+      },
+    };
+
+  const acceptedSortKeys = ['actualAmountPaid', 'paymentMethod', 'paymentDate'];
+
+  if (sortBy && !acceptedSortKeys.includes(sortBy))
+    return {
+      contributor: {
+        name: order ?? 'asc',
+      },
+    };
+
+  let sortByValue = sortBy ? sortBy : 'name';
+  let sortOrderValue = order ? order : 'asc';
+
+  return {
+    [sortByValue]: sortOrderValue,
+  };
 }
 
 export async function getProjectById({
   projectId,
   c,
   date,
+  sort,
+  order,
 }: GetProjectByIdArgs) {
   // for payment schedule options
   const paymentSchedules = await prisma.paymentSchedule.findMany({
@@ -86,11 +136,7 @@ export async function getProjectById({
         include: {
           contributor: true,
         },
-        orderBy: {
-          contributor: {
-            name: 'asc',
-          },
-        },
+        orderBy: getPaymentScheduleSort(sort, order),
       },
       contributors: {
         where: {
@@ -106,9 +152,7 @@ export async function getProjectById({
             },
           },
         },
-        orderBy: {
-          name: 'asc',
-        },
+        orderBy: getContributorSort(sort, order),
       },
     },
   });

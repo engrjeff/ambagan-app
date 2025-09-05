@@ -28,7 +28,13 @@ const cachedProject = cache(getProjectById);
 
 interface PageProps {
   params: Promise<{ projectId: string }>;
-  searchParams: Promise<{ tab?: string; c?: string; date?: string }>;
+  searchParams: Promise<{
+    tab?: string;
+    c?: string;
+    date?: string;
+    sort?: string;
+    order?: 'asc' | 'desc';
+  }>;
 }
 
 export const generateMetadata = async ({
@@ -50,8 +56,7 @@ async function ProjectContributorsPage({ params, searchParams }: PageProps) {
   const { project, paymentDateOptions, quickStatistics, topContributors } =
     await cachedProject({
       projectId: pageParams.projectId,
-      c: pageSearchParams.c,
-      date: pageSearchParams.date,
+      ...pageSearchParams,
     });
 
   if (!project) return notFound();
