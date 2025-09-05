@@ -32,6 +32,13 @@ enum PaymentMethod {
   BANK_TRANSFER
 }
 
+enum PaymentFrequency {
+  ONE_TIME
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+}
+
 model Project {
   id String @id @default(cuid())
 
@@ -43,6 +50,7 @@ model Project {
   targetAmount              Float
   defaultContributionAmount Float
   paymentDay                Int // like 1,2,15,30 of every month
+  paymentFrequency          PaymentFrequency
 
   icon  String // icon name
   color String // accent/background color

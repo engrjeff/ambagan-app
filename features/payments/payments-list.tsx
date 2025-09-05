@@ -84,21 +84,23 @@ export function PaymentsList({
               </option>
             ))}
           </SelectNative>
-          <SelectNative
-            defaultValue={
-              searchParams.get('date') ?? paymentDateOptions.at(0)?.value
-            }
-            name="date"
-            aria-label="filter by schedule date"
-            onChange={handleFilterChange}
-          >
-            <option value="">Select date</option>
-            {paymentDateOptions.map((d) => (
-              <option key={d.id} value={d.value}>
-                {d.label}
-              </option>
-            ))}
-          </SelectNative>
+          {paymentDateOptions.length <= 1 ? null : (
+            <SelectNative
+              defaultValue={
+                searchParams.get('date') ?? paymentDateOptions.at(0)?.value
+              }
+              name="date"
+              aria-label="filter by schedule date"
+              onChange={handleFilterChange}
+            >
+              <option value="">Select date</option>
+              {paymentDateOptions.map((d) => (
+                <option key={d.id} value={d.value}>
+                  {d.label}
+                </option>
+              ))}
+            </SelectNative>
+          )}
         </div>
       </div>
       <div className="border rounded-md my-4 pb-4 max-h-[60vh] overflow-x-auto">

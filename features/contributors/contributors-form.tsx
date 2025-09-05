@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/dialog';
 import { MinusIcon, PlusIcon, UserPlusIcon } from 'lucide-react';
 
+import { Project } from '@/app/generated/prisma';
 import { Input } from '@/components/ui/input';
 import { NumberInput } from '@/components/ui/number-input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -61,7 +62,7 @@ const dummy = [
   'Mariz Segovia',
 ];
 
-export function ContributorsFormDialog() {
+export function ContributorsFormDialog({ project }: { project: Project }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -83,13 +84,22 @@ export function ContributorsFormDialog() {
             Fill out the form below with the contributors&apos; details.
           </DialogDescription>
         </DialogHeader>
-        <ContributorsForm onAfterSave={() => setOpen(false)} />
+        <ContributorsForm
+          project={project}
+          onAfterSave={() => setOpen(false)}
+        />
       </DialogContent>
     </Dialog>
   );
 }
 
-function ContributorsForm({ onAfterSave }: { onAfterSave: VoidFunction }) {
+function ContributorsForm({
+  project,
+  onAfterSave,
+}: {
+  project: Project;
+  onAfterSave: VoidFunction;
+}) {
   const { projectId } = useParams<{ projectId: string }>();
 
   const debug = false;
@@ -101,14 +111,29 @@ function ContributorsForm({ onAfterSave }: { onAfterSave: VoidFunction }) {
       contributors: debug
         ? dummy.map((d) => ({
             name: d,
-            contributionAmount: 600,
+            contributionAmount: project.defaultContributionAmount,
             email: '',
             phoneNumber: '',
           }))
         : [
-            { name: '', email: '', phoneNumber: '', contributionAmount: 0.0 },
-            { name: '', email: '', phoneNumber: '', contributionAmount: 0.0 },
-            { name: '', email: '', phoneNumber: '', contributionAmount: 0.0 },
+            {
+              name: '',
+              email: '',
+              phoneNumber: '',
+              contributionAmount: project.defaultContributionAmount,
+            },
+            {
+              name: '',
+              email: '',
+              phoneNumber: '',
+              contributionAmount: project.defaultContributionAmount,
+            },
+            {
+              name: '',
+              email: '',
+              phoneNumber: '',
+              contributionAmount: project.defaultContributionAmount,
+            },
           ],
     },
   });

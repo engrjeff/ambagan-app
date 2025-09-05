@@ -13,7 +13,7 @@ import Link from 'next/link';
 export function Header() {
   return (
     <header className="border-b">
-      <div className="flex max-w-7xl w-full mx-auto h-16 items-center justify-between gap-4 px-4">
+      <div className="flex max-w-6xl w-full mx-auto h-16 items-center justify-between gap-4 px-4">
         <Link href="/" className="flex items-center gap-x-4">
           <HandCoins className="size-6" />
           <span className="font-semibold">{app.title}</span>

@@ -4,6 +4,7 @@ import {
   Contributor,
   ContributorStatus,
   PaymentSchedule,
+  Project,
 } from '@/app/generated/prisma';
 import { SortLink } from '@/components/sort-link';
 import { Badge } from '@/components/ui/badge';
@@ -28,7 +29,7 @@ import { ContributorDeleteDialog } from './contributor-delete-dialog';
 import { ContributorEditFormDialog } from './contributor-edit-form';
 
 interface ContributorListProps {
-  projectTitle: string;
+  project: Project;
   contributors: Array<
     Contributor & {
       paymentSchedules: PaymentSchedule[];
@@ -37,7 +38,7 @@ interface ContributorListProps {
 }
 
 export function ContributorList({
-  projectTitle,
+  project,
   contributors,
 }: ContributorListProps) {
   return (
@@ -47,13 +48,13 @@ export function ContributorList({
           paramName="c"
           placeholder={`Search ${contributors.length} contributors`}
         />
-        <ContributorsFormDialog />
+        <ContributorsFormDialog project={project} />
       </div>
 
       <div className="border rounded-md my-4 pb-4 max-h-[60vh] overflow-x-auto">
         <Table>
           <TableCaption>
-            A list of contributors for {projectTitle}.
+            A list of contributors for {project.title}.
           </TableCaption>
           <TableHeader className="bg-card">
             <TableRow className="hover:bg-transparent">

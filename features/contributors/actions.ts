@@ -3,14 +3,18 @@
 import { prisma } from '@/lib/prisma';
 import { authActionClient } from '@/lib/safe-action';
 import {
+  addDays,
   addMonths,
+  addQuarters,
   getDaysInMonth,
   isBefore,
   isSameDay,
   isWithinInterval,
   setDate,
   startOfMonth,
+  startOfWeek,
 } from 'date-fns';
+import { PaymentFrequency } from '@/app/generated/prisma';
 import { revalidatePath } from 'next/cache';
 import {
   contributorEditSchema,
@@ -30,28 +34,77 @@ function getPaymentDateForMonth(monthDate: Date, paymentDay: number): Date {
 }
 
 /**
- * Generates all payment dates between start and end dates for a given day of month
+ * Generates all payment dates between start and end dates based on payment frequency
  */
 function generatePaymentDates(
   startDate: Date,
   endDate: Date,
-  paymentDay: number
+  paymentDay: number,
+  paymentFrequency: PaymentFrequency
 ): Date[] {
   const paymentDates: Date[] = [];
 
-  // Start from the beginning of the month containing startDate
-  let currentMonth = startOfMonth(startDate);
-
-  while (isBefore(currentMonth, endDate) || isSameDay(currentMonth, endDate)) {
-    const paymentDate = getPaymentDateForMonth(currentMonth, paymentDay);
-
-    // Only include payment dates that fall within the project period
-    if (isWithinInterval(paymentDate, { start: startDate, end: endDate })) {
-      paymentDates.push(paymentDate);
+  switch (paymentFrequency) {
+    case PaymentFrequency.ONE_TIME: {
+      // For one-time payments, use the start date
+      paymentDates.push(startDate);
+      break;
     }
 
-    // Move to next month
-    currentMonth = addMonths(currentMonth, 1);
+    case PaymentFrequency.WEEKLY: {
+      // Start from the first occurrence of the payment day in the start week
+      let currentDate = startOfWeek(startDate);
+      currentDate = addDays(currentDate, paymentDay % 7);
+      
+      // If the calculated date is before start date, move to next week
+      if (isBefore(currentDate, startDate)) {
+        currentDate = addDays(currentDate, 7);
+      }
+
+      while (isBefore(currentDate, endDate) || isSameDay(currentDate, endDate)) {
+        if (isWithinInterval(currentDate, { start: startDate, end: endDate })) {
+          paymentDates.push(new Date(currentDate));
+        }
+        currentDate = addDays(currentDate, 7);
+      }
+      break;
+    }
+
+    case PaymentFrequency.MONTHLY: {
+      // Start from the beginning of the month containing startDate
+      let currentMonth = startOfMonth(startDate);
+
+      while (isBefore(currentMonth, endDate) || isSameDay(currentMonth, endDate)) {
+        const paymentDate = getPaymentDateForMonth(currentMonth, paymentDay);
+
+        // Only include payment dates that fall within the project period
+        if (isWithinInterval(paymentDate, { start: startDate, end: endDate })) {
+          paymentDates.push(paymentDate);
+        }
+
+        // Move to next month
+        currentMonth = addMonths(currentMonth, 1);
+      }
+      break;
+    }
+
+    case PaymentFrequency.QUARTERLY: {
+      // Start from the beginning of the month containing startDate
+      let currentQuarter = startOfMonth(startDate);
+
+      while (isBefore(currentQuarter, endDate) || isSameDay(currentQuarter, endDate)) {
+        const paymentDate = getPaymentDateForMonth(currentQuarter, paymentDay);
+
+        // Only include payment dates that fall within the project period
+        if (isWithinInterval(paymentDate, { start: startDate, end: endDate })) {
+          paymentDates.push(paymentDate);
+        }
+
+        // Move to next quarter (3 months)
+        currentQuarter = addQuarters(currentQuarter, 1);
+      }
+      break;
+    }
   }
 
   return paymentDates;
@@ -75,7 +128,8 @@ export const addContributors = authActionClient
       const paymentSchedule = generatePaymentDates(
         project.startDate,
         project.endDate,
-        project.paymentDay
+        project.paymentDay,
+        project.paymentFrequency
       );
 
       // create the contributors

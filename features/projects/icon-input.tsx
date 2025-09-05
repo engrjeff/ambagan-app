@@ -9,6 +9,7 @@ import {
 import {
   CalendarDaysIcon,
   CarIcon,
+  ChevronDownIcon,
   GiftIcon,
   GraduationCapIcon,
   HeartIcon,
@@ -70,6 +71,8 @@ export function IconInput({
           ) : (
             placeholder
           )}
+
+          <ChevronDownIcon className="ml-auto" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-2">

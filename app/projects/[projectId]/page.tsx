@@ -118,7 +118,7 @@ async function ProjectContributorsPage({ params, searchParams }: PageProps) {
           </TabsContent>
           <TabsContent value="contributors" className="py-2">
             <ContributorList
-              projectTitle={project.title}
+              project={project}
               contributors={project.contributors}
             />
           </TabsContent>

@@ -1,3 +1,5 @@
+import { PaymentFrequency } from '@/app/generated/prisma';
+import { isBefore } from 'date-fns';
 import { z } from 'zod';
 
 export const projectSchema = z
@@ -15,14 +17,14 @@ export const projectSchema = z
       .positive('Target amount must be positive')
       .min(1, 'Target amount must be at least $1'),
     defaultContributionAmount: z
-      .number({ message: 'Default contribution amount must be a number' })
-      .positive('Default contribution amount must be positive')
-      .gt(0, 'Provide a valid contribution amount'),
+      .number({ message: 'Required' })
+      .gt(0, 'Must not be zero'),
     paymentDay: z
-      .number()
+      .number({ error: 'Required' })
       .int('Invalid payment day')
       .min(1, 'Invalid payment day')
       .max(31, 'Invalid payment day'),
+    paymentFrequency: z.enum(PaymentFrequency),
     icon: z.string().min(1, 'Icon is required'),
     color: z
       .string()
@@ -35,9 +37,34 @@ export const projectSchema = z
       message: 'End date must be a valid date',
     }),
   })
-  .refine((data) => data.endDate > data.startDate, {
-    message: 'End date must be later than start date',
-    path: ['endDate'],
+  .superRefine((data, ctx) => {
+    if (data.paymentFrequency === PaymentFrequency.WEEKLY) {
+      if (data.paymentDay > 7) {
+        ctx.addIssue({
+          code: 'custom',
+          message: `Must not exceed 7.`,
+          path: ['paymentDay'],
+        });
+      }
+    } else if (
+      data.paymentFrequency === PaymentFrequency.MONTHLY ||
+      data.paymentFrequency === PaymentFrequency.QUARTERLY
+    ) {
+      if (data.endDate && data.startDate) {
+        const end = new Date(data.endDate);
+        const start = new Date(data.startDate);
+
+        if (!isBefore(start, end)) {
+          console.log('Running');
+
+          ctx.addIssue({
+            code: 'custom',
+            message: `End date must be later than start date.`,
+            path: ['endDate'],
+          });
+        }
+      }
+    }
   });
 
 export const projectIdSchema = z.object({

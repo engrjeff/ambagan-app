@@ -20,9 +20,9 @@ export function PendingPayments({
 }: {
   paymentSchedules: Array<PaymentSchedule & { contributor: Contributor }>;
 }) {
-  const monthOf = formatDate(
-    paymentSchedules[0].scheduledPaymentDate.toISOString()
-  );
+  const monthOf = paymentSchedules[0]
+    ? formatDate(paymentSchedules[0].scheduledPaymentDate.toISOString())
+    : '';
 
   const pendingPayments = paymentSchedules.filter(
     (p) => p.paymentMethod === PaymentMethod.UNPAID
