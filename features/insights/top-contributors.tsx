@@ -11,13 +11,6 @@ import { Separator } from '@/components/ui/separator';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { CalendarIcon, PackageIcon } from 'lucide-react';
 
-function getTotalContributions(paymentContributions: PaymentSchedule[]) {
-  return paymentContributions.reduce(
-    (total, payment) => total + payment.actualAmountPaid,
-    0
-  );
-}
-
 export function TopContributors({
   project,
   topContributors,
