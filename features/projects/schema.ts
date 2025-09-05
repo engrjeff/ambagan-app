@@ -74,7 +74,12 @@ export const projectIdSchema = z.object({
 });
 
 export const projectEditSchema = projectSchema
-  .omit({ startDate: true, endDate: true, paymentDay: true })
+  .omit({
+    startDate: true,
+    endDate: true,
+    paymentDay: true,
+    paymentFrequency: true,
+  })
   .extend(projectIdSchema.shape);
 
 export type ProjectInputs = z.infer<typeof projectSchema>;
