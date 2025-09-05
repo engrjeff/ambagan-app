@@ -3,7 +3,6 @@
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { cn, toCompactWithCurrency } from '@/lib/utils';
 import { CalendarIcon, HourglassIcon, TrendingUpIcon } from 'lucide-react';
-import { useMemo } from 'react';
 
 export function QuickStatistics(props: {
   totalRaised: number;
@@ -12,32 +11,29 @@ export function QuickStatistics(props: {
   paidContributorsCount: number;
   contributorsCount: number;
 }) {
-  const data = useMemo(
-    () => [
-      {
-        name: 'Total Raised',
-        value: toCompactWithCurrency(props.totalRaised),
-        iconClass: 'bg-primary/20 text-primary',
-        icon: TrendingUpIcon,
-        subtext: `of ${toCompactWithCurrency(props.targetAmount)}`,
-      },
-      {
-        name: 'Contributions This Month',
-        value: toCompactWithCurrency(props.contributionsThisMonth),
-        iconClass: 'bg-green-600/20 text-green-600',
-        icon: CalendarIcon,
-        subtext: `from ${props.paidContributorsCount} contributors`,
-      },
-      {
-        name: 'Unpaid Contributors',
-        value: props.contributorsCount - props.paidContributorsCount,
-        iconClass: 'bg-yellow-600/20 text-yellow-600',
-        icon: HourglassIcon,
-        subtext: `out of ${props.contributorsCount} contributors`,
-      },
-    ],
-    []
-  );
+  const data = [
+    {
+      name: 'Total Raised',
+      value: toCompactWithCurrency(props.totalRaised),
+      iconClass: 'bg-primary/20 text-primary',
+      icon: TrendingUpIcon,
+      subtext: `of ${toCompactWithCurrency(props.targetAmount)}`,
+    },
+    {
+      name: 'Contributions This Month',
+      value: toCompactWithCurrency(props.contributionsThisMonth),
+      iconClass: 'bg-green-600/20 text-green-600',
+      icon: CalendarIcon,
+      subtext: `from ${props.paidContributorsCount} contributors`,
+    },
+    {
+      name: 'Unpaid Contributors',
+      value: props.contributorsCount - props.paidContributorsCount,
+      iconClass: 'bg-yellow-600/20 text-yellow-600',
+      icon: HourglassIcon,
+      subtext: `out of ${props.contributorsCount} contributors`,
+    },
+  ];
 
   return (
     <dl className="grid grid-cols-1 gap-4 md:grid-cols-3 w-full">

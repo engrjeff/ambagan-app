@@ -43,7 +43,7 @@ export function SearchField({
 
       // Update URL with new search params
       const newUrl = `${pathname}?${newParams.toString()}`;
-      router.replace(newUrl as any);
+      router.replace(newUrl);
     }, debounceMs);
 
     return () => clearTimeout(timeoutId);

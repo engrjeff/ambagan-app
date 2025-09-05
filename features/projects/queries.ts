@@ -54,8 +54,8 @@ function getContributorSort(sortBy?: string, order?: 'asc' | 'desc') {
   if (sortBy && !acceptedSortKeys.includes(sortBy))
     return { name: 'asc' as 'asc' | 'desc' };
 
-  let sortByValue = sortBy ? sortBy : 'name';
-  let sortOrderValue = order ? order : 'asc';
+  const sortByValue = sortBy ? sortBy : 'name';
+  const sortOrderValue = order ? order : 'asc';
 
   return {
     [sortByValue]: sortOrderValue,
@@ -86,8 +86,8 @@ function getPaymentScheduleSort(sortBy?: string, order?: 'asc' | 'desc') {
       },
     };
 
-  let sortByValue = sortBy ? sortBy : 'name';
-  let sortOrderValue = order ? order : 'asc';
+  const sortByValue = sortBy ? sortBy : 'name';
+  const sortOrderValue = order ? order : 'asc';
 
   if (sortByValue === 'paymentDate')
     return [

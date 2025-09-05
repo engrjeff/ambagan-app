@@ -133,7 +133,7 @@ export const addContributors = authActionClient
       );
 
       // create the contributors
-      for (let contributor of contributors) {
+      for (const contributor of contributors) {
         await tx.contributor.create({
           data: {
             ...contributor,

@@ -32,8 +32,6 @@ export function ColorSelect({
   placeholder = 'Select a color',
   className,
 }: ColorSelectProps) {
-  const selectedColor = colors.find((color) => color.value === value);
-
   return (
     <Select onValueChange={onValueChange} value={value}>
       <SelectTrigger className={className}>

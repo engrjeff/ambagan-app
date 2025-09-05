@@ -112,6 +112,8 @@ function PaymentForm({
 
   const onSubmit: SubmitHandler<PaymentInputs> = async (data) => {
     try {
+      if (!session.session?.user?.id) return;
+
       setUploading(true);
 
       let proofOfPaymentUrl: string | undefined = undefined;
@@ -120,7 +122,7 @@ function PaymentForm({
         // upload
         const uploadResult = await uploadProofOfPayment({
           file: data.proofOfPayment,
-          userId: session.session?.user.id!,
+          userId: session.session.user.id,
           dueDate: formatDate(schedule.scheduledPaymentDate.toISOString()),
           projectName: projectName,
           contributor: contributor.name,

@@ -58,7 +58,7 @@ export function PaymentsList({
 
     // Update URL with new search params
     const newUrl = `${pathname}?${newParams.toString()}`;
-    router.replace(newUrl as any);
+    router.replace(newUrl);
   }
 
   return (

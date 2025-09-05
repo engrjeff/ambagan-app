@@ -1,6 +1,7 @@
 import { Contributor, PaymentSchedule } from '@/app/generated/prisma';
 import { PaymentMethodBadge } from '@/components/payment-method-badge';
 import { formatCurrency, formatDate } from '@/lib/utils';
+import Image from 'next/image';
 
 export function PaymentDetailsContent({
   payment,
@@ -37,7 +38,9 @@ export function PaymentDetailsContent({
         <dd className="pb-3">
           <p className="text-xs text-muted-foreground">Payment Date</p>
           <p className="text-sm font-semibold">
-            {formatDate(payment.paymentDate?.toISOString()!)}
+            {payment.paymentDate
+              ? formatDate(payment.paymentDate?.toISOString())
+              : '--'}
           </p>
         </dd>
 
@@ -60,9 +63,12 @@ export function PaymentDetailsContent({
             <p className="text-xs text-muted-foreground mb-1">
               Proof of Payment
             </p>
-            <img
+            <Image
+              unoptimized
               src={payment.proofOfPayment}
               width={120}
+              height={140}
+              alt=""
               className="object-contain h-[140px] object-left hover:opacity-90"
             />
           </dd>
