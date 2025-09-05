@@ -33,10 +33,10 @@ export function PaymentMethodBadge({
     return (
       <Badge variant="outline" className="rounded-full gap-1.5">
         <span
-          className="size-1.5 rounded-full bg-green-500"
+          className="size-1.5 rounded-full bg-yellow-500"
           aria-hidden="true"
         ></span>{' '}
-        Bank Transfer
+        Bank
       </Badge>
     );
 
