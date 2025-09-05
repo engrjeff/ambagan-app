@@ -40,4 +40,16 @@ export const projectSchema = z
     path: ['endDate'],
   });
 
+export const projectIdSchema = z.object({
+  id: z
+    .string({ error: 'ID is required.' })
+    .min(1, { error: 'ID is required.' }),
+});
+
+export const projectEditSchema = projectSchema
+  .omit({ startDate: true, endDate: true, paymentDay: true })
+  .extend(projectIdSchema.shape);
+
 export type ProjectInputs = z.infer<typeof projectSchema>;
+
+export type ProjectEditInputs = z.infer<typeof projectEditSchema>;

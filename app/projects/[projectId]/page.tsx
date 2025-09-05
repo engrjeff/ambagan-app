@@ -21,6 +21,7 @@ import { QuickStatistics } from '@/features/insights/quick-statistics';
 import { RecentPayments } from '@/features/insights/recent-payments';
 import { TopContributors } from '@/features/insights/top-contributors';
 import { PaymentsList } from '@/features/payments/payments-list';
+import { ProjectEditForm } from '@/features/projects/project-edit-form';
 import { ProjectIcon } from '@/features/projects/project-icon';
 import { cache, Suspense } from 'react';
 
@@ -63,7 +64,7 @@ async function ProjectContributorsPage({ params, searchParams }: PageProps) {
   if (!project) return notFound();
 
   return (
-    <div className="max-w-7xl mx-auto p-4 space-y-4">
+    <div className="max-w-6xl mx-auto p-4 space-y-4">
       {/* breadcrumb */}
       <Breadcrumb>
         <BreadcrumbList>
@@ -91,7 +92,7 @@ async function ProjectContributorsPage({ params, searchParams }: PageProps) {
             <Link
               href={{
                 pathname: `/projects/${project.id}`,
-                query: { tab: 'edit' },
+                query: { tab: 'settings' },
               }}
             >
               Update Project
@@ -127,6 +128,11 @@ async function ProjectContributorsPage({ params, searchParams }: PageProps) {
               paymentDateOptions={paymentDateOptions}
               paymentSchedules={project.paymentSchedules}
             />
+          </TabsContent>
+          <TabsContent value="settings" className="py-2">
+            <div className="max-w-md mx-auto">
+              <ProjectEditForm project={project} />
+            </div>
           </TabsContent>
         </ProjectPageTabs>
       </Suspense>
