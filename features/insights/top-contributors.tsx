@@ -61,7 +61,9 @@ export function TopContributors({
           className="bg-white/10"
           indicatorColor={project.color}
         />
-        <p className="text-xs text-muted-foreground">{percentage}% completed</p>
+        <p className="text-xs text-muted-foreground">
+          {percentage.toFixed(1)}% completed
+        </p>
       </CardContent>
 
       <Separator />
