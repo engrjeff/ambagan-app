@@ -1,17 +1,10 @@
-import {
-  Contributor,
-  PaymentMethod,
-  PaymentSchedule,
-} from '@/app/generated/prisma';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import Link from "next/link";
+import { isBefore } from "date-fns";
+import { ChevronRightIcon, PackageIcon } from "lucide-react";
+
+import { Contributor, PaymentMethod, PaymentSchedule } from "@/app/generated/prisma";
+import { Button } from "@/components/ui/button";
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Sheet,
   SheetClose,
@@ -21,12 +14,9 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
-import { formatCurrency, formatDate } from '@/lib/utils';
-import { isBefore } from 'date-fns';
-import { ChevronRightIcon, PackageIcon } from 'lucide-react';
-import Link from 'next/link';
-import { PaymentDetailsContent } from '../payments/payment-details-content';
+} from "@/components/ui/sheet";
+import { formatCurrency, formatDate } from "@/lib/utils";
+import { PaymentDetailsContent } from "../payments/payment-details-content";
 
 export function RecentPayments({
   paymentSchedules,
@@ -35,7 +25,7 @@ export function RecentPayments({
 }) {
   const monthOf = paymentSchedules[0]
     ? formatDate(paymentSchedules[0].scheduledPaymentDate.toISOString())
-    : 'No payments made yet';
+    : "No payments made yet";
 
   const recentPayments = paymentSchedules
     .filter((p) => p.paymentMethod !== PaymentMethod.UNPAID)
@@ -51,9 +41,7 @@ export function RecentPayments({
         {hasRecentPayments ? (
           <CardAction>
             <Button asChild variant="link" size="sm" className="p-0">
-              <Link
-                href={`/projects/${recentPayments[0]?.projectId}?tab=payment-tracking&sort=paymentDate&order=desc`}
-              >
+              <Link href={`/projects/${recentPayments[0]?.projectId}?tab=payment-tracking&sort=paymentDate&order=desc`}>
                 View All
               </Link>
             </Button>
@@ -70,7 +58,7 @@ export function RecentPayments({
             ))}
           </ul>
         ) : (
-          <div className="text-center text-muted-foreground h-[200px] flex gap-4 flex-col items-center justify-center">
+          <div className="text-muted-foreground flex h-[200px] flex-col items-center justify-center gap-4 text-center">
             <PackageIcon className="size-5" />
             <p className="text-sm">No payments made yet.</p>
           </div>
@@ -80,33 +68,23 @@ export function RecentPayments({
   );
 }
 
-function RecentPaymentItem({
-  payment,
-}: {
-  payment: PaymentSchedule & { contributor: Contributor };
-}) {
+function RecentPaymentItem({ payment }: { payment: PaymentSchedule & { contributor: Contributor } }) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <div className="flex items-center gap-4 group cursor-pointer hover:bg-accent px-2 py-0.5 rounded-md">
+        <div className="group hover:bg-accent flex cursor-pointer items-center gap-4 rounded-md px-2 py-0.5">
           <div>
-            <p className="font-semibold text-sm">{payment.contributor.name}</p>
-            <p className="text-xs text-muted-foreground">
-              {formatDate(payment.paymentDate!.toISOString())}
-            </p>
+            <p className="text-sm font-semibold">{payment.contributor.name}</p>
+            <p className="text-muted-foreground text-xs">{formatDate(payment.paymentDate!.toISOString())}</p>
           </div>
-          <p className="text-sm text-green-500 ml-auto font-mono">
-            +{formatCurrency(payment.actualAmountPaid)}
-          </p>
-          <ChevronRightIcon className="size-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+          <p className="ml-auto font-mono text-sm text-green-500">+{formatCurrency(payment.actualAmountPaid)}</p>
+          <ChevronRightIcon className="text-muted-foreground size-4 transition-transform group-hover:translate-x-1" />
         </div>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Payment Details</SheetTitle>
-          <SheetDescription>
-            Showing the payment details of {payment.contributor.name}
-          </SheetDescription>
+          <SheetDescription>Showing the payment details of {payment.contributor.name}</SheetDescription>
         </SheetHeader>
 
         <PaymentDetailsContent payment={payment} />

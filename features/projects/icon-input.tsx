@@ -1,11 +1,6 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { useState } from "react";
 import {
   CalendarDaysIcon,
   CarIcon,
@@ -20,22 +15,24 @@ import {
   ShoppingCartIcon,
   UtensilsIcon,
   ZapIcon,
-} from 'lucide-react';
-import { useState } from 'react';
+} from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const icons = [
-  { value: 'home', name: 'Home', icon: HomeIcon },
-  { value: 'heart', name: 'Health', icon: HeartIcon },
-  { value: 'graduation-cap', name: 'Education', icon: GraduationCapIcon },
-  { value: 'car', name: 'Transportation', icon: CarIcon },
-  { value: 'plane', name: 'Travel', icon: PlaneIcon },
-  { value: 'utensils', name: 'Food', icon: UtensilsIcon },
-  { value: 'music', name: 'Music', icon: MusicIcon },
-  { value: 'calendar-days', name: 'Event', icon: CalendarDaysIcon },
-  { value: 'zap', name: 'Utilities', icon: ZapIcon },
-  { value: 'shopping-cart', name: 'Shopping', icon: ShoppingCartIcon },
-  { value: 'piggy-bank', name: 'Savings', icon: PiggyBankIcon },
-  { value: 'gift', name: 'Gift', icon: GiftIcon },
+  { value: "home", name: "Home", icon: HomeIcon },
+  { value: "heart", name: "Health", icon: HeartIcon },
+  { value: "graduation-cap", name: "Education", icon: GraduationCapIcon },
+  { value: "car", name: "Transportation", icon: CarIcon },
+  { value: "plane", name: "Travel", icon: PlaneIcon },
+  { value: "utensils", name: "Food", icon: UtensilsIcon },
+  { value: "music", name: "Music", icon: MusicIcon },
+  { value: "calendar-days", name: "Event", icon: CalendarDaysIcon },
+  { value: "zap", name: "Utilities", icon: ZapIcon },
+  { value: "shopping-cart", name: "Shopping", icon: ShoppingCartIcon },
+  { value: "piggy-bank", name: "Savings", icon: PiggyBankIcon },
+  { value: "gift", name: "Gift", icon: GiftIcon },
 ];
 
 interface IconInputProps {
@@ -45,24 +42,14 @@ interface IconInputProps {
   className?: string;
 }
 
-export function IconInput({
-  value,
-  onValueChange,
-  placeholder = 'Select an icon',
-  className,
-}: IconInputProps) {
+export function IconInput({ value, onValueChange, placeholder = "Select an icon", className }: IconInputProps) {
   const [open, setOpen] = useState(false);
   const selectedIcon = icons.find((icon) => icon.value === value);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className={`justify-start ${className}`}
-        >
+        <Button variant="outline" role="combobox" aria-expanded={open} className={`justify-start ${className}`}>
           {selectedIcon ? (
             <div className="flex items-center gap-2">
               <selectedIcon.icon className="h-4 w-4" />
@@ -82,7 +69,7 @@ export function IconInput({
             return (
               <Button
                 key={icon.value}
-                variant={value === icon.value ? 'default' : 'ghost'}
+                variant={value === icon.value ? "default" : "ghost"}
                 size="icon"
                 onClick={() => {
                   onValueChange?.(icon.value);

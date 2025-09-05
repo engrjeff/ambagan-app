@@ -1,21 +1,19 @@
-'use server';
+"use server";
 
-import { PaymentMethod, PaymentSchedule } from '@/app/generated/prisma';
-import { prisma } from '@/lib/prisma';
-import { formatDate, removeDuplicates } from '@/lib/utils';
-import { auth } from '@clerk/nextjs/server';
+import { auth } from "@clerk/nextjs/server";
+
+import { PaymentMethod, PaymentSchedule } from "@/app/generated/prisma";
+import { prisma } from "@/lib/prisma";
+import { formatDate, removeDuplicates } from "@/lib/utils";
 
 function getTotalContributions(paymentContributions: PaymentSchedule[]) {
-  return paymentContributions.reduce(
-    (total, payment) => total + payment.actualAmountPaid,
-    0
-  );
+  return paymentContributions.reduce((total, payment) => total + payment.actualAmountPaid, 0);
 }
 
 export async function getProjects() {
   const user = await auth();
 
-  if (!user?.userId) throw new Error('Session not found');
+  if (!user?.userId) throw new Error("Session not found");
 
   const projects = await prisma.project.findMany({
     where: { userId: user.userId },
@@ -44,62 +42,61 @@ interface GetProjectByIdArgs {
   c?: string; // contributor name search
   date?: string; // schedule
   sort?: string;
-  order?: 'asc' | 'desc';
+  order?: "asc" | "desc";
   status?: string;
 }
 
-function getContributorSort(sortBy?: string, order?: 'asc' | 'desc') {
-  const acceptedSortKeys = ['name', 'contributionAmount'];
+function getContributorSort(sortBy?: string, order?: "asc" | "desc") {
+  const acceptedSortKeys = ["name", "contributionAmount"];
 
-  if (sortBy && !acceptedSortKeys.includes(sortBy))
-    return { name: 'asc' as 'asc' | 'desc' };
+  if (sortBy && !acceptedSortKeys.includes(sortBy)) return { name: "asc" as "asc" | "desc" };
 
-  const sortByValue = sortBy ? sortBy : 'name';
-  const sortOrderValue = order ? order : 'asc';
+  const sortByValue = sortBy ? sortBy : "name";
+  const sortOrderValue = order ? order : "asc";
 
   return {
     [sortByValue]: sortOrderValue,
   };
 }
 
-function getPaymentScheduleSort(sortBy?: string, order?: 'asc' | 'desc') {
+function getPaymentScheduleSort(sortBy?: string, order?: "asc" | "desc") {
   if (!sortBy && !order)
     return {
       contributor: {
-        name: 'asc' as 'asc' | 'desc',
+        name: "asc" as "asc" | "desc",
       },
     };
 
-  if (sortBy === 'paidBy')
+  if (sortBy === "paidBy")
     return {
       contributor: {
-        name: order ?? 'asc',
+        name: order ?? "asc",
       },
     };
 
-  const acceptedSortKeys = ['actualAmountPaid', 'paymentMethod', 'paymentDate'];
+  const acceptedSortKeys = ["actualAmountPaid", "paymentMethod", "paymentDate"];
 
   if (sortBy && !acceptedSortKeys.includes(sortBy))
     return {
       contributor: {
-        name: order ?? 'asc',
+        name: order ?? "asc",
       },
     };
 
-  const sortByValue = sortBy ? sortBy : 'name';
-  const sortOrderValue = order ? order : 'asc';
+  const sortByValue = sortBy ? sortBy : "name";
+  const sortOrderValue = order ? order : "asc";
 
-  if (sortByValue === 'paymentDate')
+  if (sortByValue === "paymentDate")
     return [
       {
         paymentDate: {
-          sort: order as 'asc' | 'desc',
-          nulls: 'last' as 'first' | 'last',
+          sort: order as "asc" | "desc",
+          nulls: "last" as "first" | "last",
         },
       },
       {
         contributor: {
-          name: 'desc' as 'asc' | 'desc',
+          name: "desc" as "asc" | "desc",
         },
       },
     ];
@@ -109,14 +106,7 @@ function getPaymentScheduleSort(sortBy?: string, order?: 'asc' | 'desc') {
   };
 }
 
-export async function getProjectById({
-  projectId,
-  c,
-  date,
-  sort,
-  order,
-  status,
-}: GetProjectByIdArgs) {
+export async function getProjectById({ projectId, c, date, sort, order, status }: GetProjectByIdArgs) {
   // for payment schedule options
   const paymentSchedules = await prisma.paymentSchedule.findMany({
     where: { projectId },
@@ -124,7 +114,7 @@ export async function getProjectById({
       contributor: { select: { name: true, contributionAmount: true } },
     },
     orderBy: {
-      scheduledPaymentDate: 'asc',
+      scheduledPaymentDate: "asc",
     },
   });
 
@@ -146,7 +136,7 @@ export async function getProjectById({
           contributor: {
             name: {
               contains: c,
-              mode: 'insensitive',
+              mode: "insensitive",
             },
           },
 
@@ -161,13 +151,13 @@ export async function getProjectById({
         where: {
           name: {
             contains: c,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
         },
         include: {
           paymentSchedules: {
             orderBy: {
-              paymentDate: 'asc',
+              paymentDate: "asc",
             },
           },
         },
@@ -177,21 +167,13 @@ export async function getProjectById({
   });
 
   // quick statistics data
-  const totalRaised = paymentSchedules.reduce(
-    (total, payment) => total + payment.actualAmountPaid,
-    0
-  );
+  const totalRaised = paymentSchedules.reduce((total, payment) => total + payment.actualAmountPaid, 0);
 
   const contributionsThisMonth =
-    project?.paymentSchedules.reduce(
-      (total, payment) => total + payment.actualAmountPaid,
-      0
-    ) ?? 0;
+    project?.paymentSchedules.reduce((total, payment) => total + payment.actualAmountPaid, 0) ?? 0;
 
   const paidContributorsCount =
-    project?.paymentSchedules.filter(
-      (p) => p.paymentMethod !== PaymentMethod.UNPAID
-    )?.length ?? 0;
+    project?.paymentSchedules.filter((p) => p.paymentMethod !== PaymentMethod.UNPAID)?.length ?? 0;
 
   const quickStatistics = {
     totalRaised,
@@ -202,9 +184,7 @@ export async function getProjectById({
   };
 
   // top contributors
-  const paidSchedules = paymentSchedules.filter(
-    (p) => p.paymentMethod !== PaymentMethod.UNPAID
-  );
+  const paidSchedules = paymentSchedules.filter((p) => p.paymentMethod !== PaymentMethod.UNPAID);
   // group by contributor
   const topContributorsMap = new Map<
     string,
@@ -240,9 +220,7 @@ export async function getProjectById({
   return {
     project,
     quickStatistics,
-    paymentDateOptions: removeDuplicates(paymentDateOptions, 'label'),
-    topContributors: Array.from(topContributorsMap.values()).sort((a, b) =>
-      a.totalPaid < b.totalPaid ? 1 : -1
-    ),
+    paymentDateOptions: removeDuplicates(paymentDateOptions, "label"),
+    topContributors: Array.from(topContributorsMap.values()).sort((a, b) => (a.totalPaid < b.totalPaid ? 1 : -1)),
   };
 }

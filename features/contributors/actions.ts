@@ -1,7 +1,6 @@
-'use server';
+"use server";
 
-import { prisma } from '@/lib/prisma';
-import { authActionClient } from '@/lib/safe-action';
+import { revalidatePath } from "next/cache";
 import {
   addDays,
   addMonths,
@@ -13,14 +12,12 @@ import {
   setDate,
   startOfMonth,
   startOfWeek,
-} from 'date-fns';
-import { PaymentFrequency } from '@/app/generated/prisma';
-import { revalidatePath } from 'next/cache';
-import {
-  contributorEditSchema,
-  contributorIdSchema,
-  contributorSchema,
-} from './schema';
+} from "date-fns";
+
+import { PaymentFrequency } from "@/app/generated/prisma";
+import { prisma } from "@/lib/prisma";
+import { authActionClient } from "@/lib/safe-action";
+import { contributorEditSchema, contributorIdSchema, contributorSchema } from "./schema";
 
 /* Gets the appropriate payment date for a specific month, handling edge cases
  */
@@ -55,7 +52,7 @@ function generatePaymentDates(
       // Start from the first occurrence of the payment day in the start week
       let currentDate = startOfWeek(startDate);
       currentDate = addDays(currentDate, paymentDay % 7);
-      
+
       // If the calculated date is before start date, move to next week
       if (isBefore(currentDate, startDate)) {
         currentDate = addDays(currentDate, 7);
@@ -111,10 +108,10 @@ function generatePaymentDates(
 }
 
 export const addContributors = authActionClient
-  .metadata({ actionName: 'addContributors' })
+  .metadata({ actionName: "addContributors" })
   .inputSchema(contributorSchema)
   .action(async ({ parsedInput, ctx: { user } }) => {
-    if (!user?.userId) throw new Error('Session not found.');
+    if (!user?.userId) throw new Error("Session not found.");
 
     const { projectId, contributors } = parsedInput;
 
@@ -160,10 +157,10 @@ export const addContributors = authActionClient
   });
 
 export const updateContributor = authActionClient
-  .metadata({ actionName: 'updateContributor' })
+  .metadata({ actionName: "updateContributor" })
   .inputSchema(contributorEditSchema)
   .action(async ({ parsedInput, ctx: { user } }) => {
-    if (!user?.userId) throw new Error('Session not found.');
+    if (!user?.userId) throw new Error("Session not found.");
 
     const { id, name, contributionAmount, email, phoneNumber } = parsedInput;
 
@@ -184,10 +181,10 @@ export const updateContributor = authActionClient
   });
 
 export const deleteContributor = authActionClient
-  .metadata({ actionName: 'deleteContributor' })
+  .metadata({ actionName: "deleteContributor" })
   .inputSchema(contributorIdSchema)
   .action(async ({ parsedInput, ctx: { user } }) => {
-    if (!user?.userId) throw new Error('Session not found.');
+    if (!user?.userId) throw new Error("Session not found.");
 
     const { id } = parsedInput;
 

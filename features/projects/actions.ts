@@ -1,15 +1,16 @@
-'use server';
+"use server";
 
-import { prisma } from '@/lib/prisma';
-import { authActionClient } from '@/lib/safe-action';
-import { revalidatePath } from 'next/cache';
-import { projectEditSchema, projectIdSchema, projectSchema } from './schema';
+import { revalidatePath } from "next/cache";
+
+import { prisma } from "@/lib/prisma";
+import { authActionClient } from "@/lib/safe-action";
+import { projectEditSchema, projectIdSchema, projectSchema } from "./schema";
 
 export const createProject = authActionClient
-  .metadata({ actionName: 'createProject' })
+  .metadata({ actionName: "createProject" })
   .inputSchema(projectSchema)
   .action(async ({ parsedInput, ctx: { user } }) => {
-    if (!user?.userId) throw new Error('Session not found.');
+    if (!user?.userId) throw new Error("Session not found.");
 
     const { startDate, endDate, ...data } = parsedInput;
 
@@ -26,7 +27,7 @@ export const createProject = authActionClient
       },
     });
 
-    revalidatePath('/projects');
+    revalidatePath("/projects");
 
     return {
       project,
@@ -34,10 +35,10 @@ export const createProject = authActionClient
   });
 
 export const updateProject = authActionClient
-  .metadata({ actionName: 'updateProject' })
+  .metadata({ actionName: "updateProject" })
   .inputSchema(projectEditSchema)
   .action(async ({ parsedInput, ctx: { user } }) => {
-    if (!user?.userId) throw new Error('Session not found.');
+    if (!user?.userId) throw new Error("Session not found.");
 
     const { id, ...data } = parsedInput;
 
@@ -50,7 +51,7 @@ export const updateProject = authActionClient
       },
     });
 
-    revalidatePath('/projects');
+    revalidatePath("/projects");
     revalidatePath(`/projects/${project.id}`);
 
     return {
@@ -59,18 +60,18 @@ export const updateProject = authActionClient
   });
 
 export const deleteProject = authActionClient
-  .metadata({ actionName: 'deleteProject' })
+  .metadata({ actionName: "deleteProject" })
   .inputSchema(projectIdSchema)
   .action(async ({ parsedInput, ctx: { user } }) => {
-    if (!user?.userId) throw new Error('Session not found.');
+    if (!user?.userId) throw new Error("Session not found.");
 
     const { id } = parsedInput;
 
-    const result = await prisma.project.delete({
+    await prisma.project.delete({
       where: { id },
     });
 
-    revalidatePath('/projects');
+    revalidatePath("/projects");
 
     return {
       success: true,

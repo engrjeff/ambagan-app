@@ -1,32 +1,18 @@
-import {
-  Contributor,
-  PaymentMethod,
-  PaymentSchedule,
-} from '@/app/generated/prisma';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { formatCurrency, formatDate } from '@/lib/utils';
-import Link from 'next/link';
+import Link from "next/link";
+
+import { Contributor, PaymentMethod, PaymentSchedule } from "@/app/generated/prisma";
+import { Button } from "@/components/ui/button";
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatCurrency, formatDate } from "@/lib/utils";
 
 export function PendingPayments({
   paymentSchedules,
 }: {
   paymentSchedules: Array<PaymentSchedule & { contributor: Contributor }>;
 }) {
-  const monthOf = paymentSchedules[0]
-    ? formatDate(paymentSchedules[0].scheduledPaymentDate.toISOString())
-    : '';
+  const monthOf = paymentSchedules[0] ? formatDate(paymentSchedules[0].scheduledPaymentDate.toISOString()) : "";
 
-  const pendingPayments = paymentSchedules.filter(
-    (p) => p.paymentMethod === PaymentMethod.UNPAID
-  );
+  const pendingPayments = paymentSchedules.filter((p) => p.paymentMethod === PaymentMethod.UNPAID);
 
   const hasPendingPayments = pendingPayments.length > 0;
 
@@ -39,9 +25,7 @@ export function PendingPayments({
         {hasPendingPayments ? (
           <CardAction>
             <Button asChild variant="link" size="sm" className="px-0">
-              <Link
-                href={`/projects/${pendingPayments[0]?.projectId}?tab=payment-tracking&status=UNPAID`}
-              >
+              <Link href={`/projects/${pendingPayments[0]?.projectId}?tab=payment-tracking&status=UNPAID`}>
                 View All
               </Link>
             </Button>
@@ -55,22 +39,18 @@ export function PendingPayments({
               <li key={p.contributorId}>
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <p className="font-semibold text-sm">
-                      {p.contributor.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-sm font-semibold">{p.contributor.name}</p>
+                    <p className="text-muted-foreground text-xs">
                       due on {formatDate(p.scheduledPaymentDate!.toISOString())}
                     </p>
                   </div>
-                  <p className="text-sm text-red-400 font-mono">
-                    -{formatCurrency(p.contributor.contributionAmount)}
-                  </p>
+                  <p className="font-mono text-sm text-red-400">-{formatCurrency(p.contributor.contributionAmount)}</p>
                 </div>
               </li>
             ))}
           </ul>
         ) : (
-          <div className="text-center text-muted-foreground h-[200px] flex gap-4 flex-col items-center justify-center">
+          <div className="text-muted-foreground flex h-[200px] flex-col items-center justify-center gap-4 text-center">
             <p>🎉</p>
             <p className="text-sm">No pending payments.</p>
           </div>

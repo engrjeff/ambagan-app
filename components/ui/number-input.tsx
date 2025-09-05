@@ -1,11 +1,9 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
+import { Input } from "./input";
 
-import { Input } from './input';
-
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   currency?: string;
   noDecimal?: boolean;
   usePeso?: boolean;
@@ -13,7 +11,7 @@ export interface InputProps
 
 export const NumberInput = ({
   className,
-  type = 'number',
+  type = "number",
   currency,
   noDecimal,
   usePeso,
@@ -24,7 +22,7 @@ export const NumberInput = ({
     if (!onChange) return;
 
     if (noDecimal) {
-      if (e.currentTarget.value.includes('.')) {
+      if (e.currentTarget.value.includes(".")) {
         return;
       }
     }
@@ -35,13 +33,11 @@ export const NumberInput = ({
   if (currency || usePeso)
     return (
       <div className="relative rounded-md">
-        <div className="absolute left-0 top-0 flex h-full min-w-9 items-center justify-center rounded-l p-1 text-center">
-          <span className="text-muted-foreground text-sm">
-            {usePeso ? '₱' : currency}
-          </span>
+        <div className="absolute top-0 left-0 flex h-full min-w-9 items-center justify-center rounded-l p-1 text-center">
+          <span className="text-muted-foreground text-sm">{usePeso ? "₱" : currency}</span>
         </div>
         <Input
-          className={cn('pl-7', className)}
+          className={cn("pl-7", className)}
           type={type}
           inputMode="numeric"
           onWheel={(e) => {

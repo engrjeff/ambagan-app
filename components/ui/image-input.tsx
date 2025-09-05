@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
-'use client';
+"use client";
 
-import React from 'react';
-import { useDropzone } from 'react-dropzone';
+import React from "react";
+import { ImageIcon, XIcon } from "lucide-react";
+import { useDropzone } from "react-dropzone";
 
-import { Button } from '@/components/ui/button';
-import { FormDescription, FormLabel } from '@/components/ui/form';
-import { ImageIcon, XIcon } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { FormDescription, FormLabel } from "@/components/ui/form";
 
 interface ImageInputProps {
   src?: string;
@@ -16,21 +16,15 @@ interface ImageInputProps {
   onDelete?: () => void;
 }
 
-export const ImageInput = ({
-  src,
-  label,
-  desc,
-  onChange,
-  onDelete,
-}: ImageInputProps) => {
+export const ImageInput = ({ src, label, desc, onChange, onDelete }: ImageInputProps) => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     accept: {
-      'image/*': [],
+      "image/*": [],
     },
     multiple: false,
     onDrop(acceptedFiles, fileRejections) {
       if (fileRejections.length > 0) {
-        console.error('File rejected:', fileRejections);
+        console.error("File rejected:", fileRejections);
         return;
       }
 
@@ -38,8 +32,8 @@ export const ImageInput = ({
 
       const reader = new FileReader();
 
-      reader.onabort = () => console.log('file reading was aborted');
-      reader.onerror = () => console.log('file reading has failed');
+      reader.onabort = () => console.log("file reading was aborted");
+      reader.onerror = () => console.log("file reading has failed");
       reader.onload = () => {
         // Do whatever you want with the file contents
         const dataUrl = reader.result;
@@ -63,13 +57,13 @@ export const ImageInput = ({
         <div {...getRootProps()} className="w-max">
           <input {...getInputProps()} />
           <Button type="button" variant="outline" size="sm" className="mt-2">
-            <ImageIcon /> {src ? 'Update Image' : 'Browse Image'}
+            <ImageIcon /> {src ? "Update Image" : "Browse Image"}
           </Button>
         </div>
       </div>
 
       {src ? (
-        <div className="relative flex w-[80px] h-[120px] border">
+        <div className="relative flex h-[120px] w-[80px] border">
           <img
             src={src}
             alt={acceptedFiles[0]?.name}
@@ -80,7 +74,7 @@ export const ImageInput = ({
               type="button"
               size="iconSm"
               aria-label="delete file"
-              className="absolute size-7 rounded-full top-0 right-0 z-10 bg-red-500 text-white hover:bg-red-400"
+              className="absolute top-0 right-0 z-10 size-7 rounded-full bg-red-500 text-white hover:bg-red-400"
               onClick={() => {
                 onDelete();
               }}

@@ -7,10 +7,10 @@ type UploadProofOfPaymentArgs = {
 };
 
 export async function uploadProofOfPayment(args: UploadProofOfPaymentArgs) {
-  const response = await fetch('/api/upload-proof-of-payment', {
-    method: 'POST',
+  const response = await fetch("/api/upload-proof-of-payment", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(args),
   });

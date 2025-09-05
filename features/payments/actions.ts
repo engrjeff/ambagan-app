@@ -1,15 +1,16 @@
-'use server';
+"use server";
 
-import { prisma } from '@/lib/prisma';
-import { authActionClient } from '@/lib/safe-action';
-import { revalidatePath } from 'next/cache';
-import { paymentSchema } from './schema';
+import { revalidatePath } from "next/cache";
+
+import { prisma } from "@/lib/prisma";
+import { authActionClient } from "@/lib/safe-action";
+import { paymentSchema } from "./schema";
 
 export const createPaymentRecord = authActionClient
-  .metadata({ actionName: 'createPaymentRecord' })
+  .metadata({ actionName: "createPaymentRecord" })
   .inputSchema(paymentSchema)
   .action(async ({ parsedInput, ctx: { user } }) => {
-    if (!user?.userId) throw new Error('Session not found.');
+    if (!user?.userId) throw new Error("Session not found.");
 
     const { paymentDate } = parsedInput;
 

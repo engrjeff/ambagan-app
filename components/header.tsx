@@ -1,28 +1,17 @@
-import { Button } from '@/components/ui/button';
-import { app } from '@/lib/config';
-import {
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from '@clerk/nextjs';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Separator } from './ui/separator';
+import Image from "next/image";
+import Link from "next/link";
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+
+import { Button } from "@/components/ui/button";
+import { app } from "@/lib/config";
+import { Separator } from "./ui/separator";
 
 export function Header() {
   return (
     <header className="border-b">
-      <div className="flex max-w-6xl w-full mx-auto h-16 items-center justify-between gap-4 p-4">
+      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 p-4">
         <Link href="/" className="flex items-center gap-x-1">
-          <Image
-            src="/icons/logo.svg"
-            alt={app.title}
-            width={32}
-            height={32}
-            className="object-contain"
-          />
+          <Image src="/icons/logo.svg" alt={app.title} width={32} height={32} className="object-contain" />
           <span className="font-semibold">{app.title}</span>
         </Link>
         <div className="flex h-full items-center gap-2">

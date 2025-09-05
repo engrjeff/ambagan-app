@@ -1,32 +1,16 @@
-'use client';
+"use client";
 
-import {
-  Contributor,
-  ContributorStatus,
-  PaymentSchedule,
-  Project,
-} from '@/app/generated/prisma';
-import { SortLink } from '@/components/sort-link';
-import { Badge } from '@/components/ui/badge';
-import { SearchField } from '@/components/ui/search-field';
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  formatCurrency,
-  getLastPaymentDate,
-  getTotalContributionsPaid,
-} from '@/lib/utils';
-import { CheckCircleIcon, PackageIcon, XCircleIcon } from 'lucide-react';
-import { ContributorsFormDialog } from '../contributors/contributors-form';
-import { ContributorDeleteDialog } from './contributor-delete-dialog';
-import { ContributorEditFormDialog } from './contributor-edit-form';
+import { CheckCircleIcon, PackageIcon, XCircleIcon } from "lucide-react";
+
+import { Contributor, ContributorStatus, PaymentSchedule, Project } from "@/app/generated/prisma";
+import { SortLink } from "@/components/sort-link";
+import { Badge } from "@/components/ui/badge";
+import { SearchField } from "@/components/ui/search-field";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { formatCurrency, getLastPaymentDate, getTotalContributionsPaid } from "@/lib/utils";
+import { ContributorsFormDialog } from "../contributors/contributors-form";
+import { ContributorDeleteDialog } from "./contributor-delete-dialog";
+import { ContributorEditFormDialog } from "./contributor-edit-form";
 
 interface ContributorListProps {
   project: Project;
@@ -37,25 +21,17 @@ interface ContributorListProps {
   >;
 }
 
-export function ContributorList({
-  project,
-  contributors,
-}: ContributorListProps) {
+export function ContributorList({ project, contributors }: ContributorListProps) {
   return (
     <>
       <div className="flex items-center justify-between">
-        <SearchField
-          paramName="c"
-          placeholder={`Search ${contributors.length} contributors`}
-        />
+        <SearchField paramName="c" placeholder={`Search ${contributors.length} contributors`} />
         <ContributorsFormDialog project={project} />
       </div>
 
-      <div className="border rounded-md my-4 pb-4 max-h-[60vh] overflow-x-auto">
+      <div className="my-4 max-h-[60vh] overflow-x-auto rounded-md border pb-4">
         <Table>
-          <TableCaption>
-            A list of contributors for {project.title}.
-          </TableCaption>
+          <TableCaption>A list of contributors for {project.title}.</TableCaption>
           <TableHeader className="bg-card">
             <TableRow className="hover:bg-transparent">
               <TableHead className="w-4 text-center">#</TableHead>
@@ -63,11 +39,7 @@ export function ContributorList({
                 <SortLink sortValue="name" title="Name" />
               </TableHead>
               <TableHead>
-                <SortLink
-                  className="justify-end -mr-4"
-                  sortValue="contributionAmount"
-                  title="Contribution"
-                />
+                <SortLink className="-mr-4 justify-end" sortValue="contributionAmount" title="Contribution" />
               </TableHead>
               <TableHead className="text-right">Total Paid</TableHead>
               <TableHead className="text-center">Last Payment Date</TableHead>
@@ -80,29 +52,23 @@ export function ContributorList({
               <TableRow className="hover:bg-background">
                 <TableCell colSpan={7} className="h-64 text-center">
                   <div className="flex flex-col items-center justify-center">
-                    <div className="mb-3 p-2 rounded-full bg-muted/50 dark:bg-muted/20">
-                      <PackageIcon className="size-6 text-muted-foreground" />
+                    <div className="bg-muted/50 dark:bg-muted/20 mb-3 rounded-full p-2">
+                      <PackageIcon className="text-muted-foreground size-6" />
                     </div>
-                    <p className="text-sm font-medium text-muted-foreground">
-                      No contributors found
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Add contributors now.
-                    </p>
+                    <p className="text-muted-foreground text-sm font-medium">No contributors found</p>
+                    <p className="text-muted-foreground mt-1 text-xs">Add contributors now.</p>
                   </div>
                 </TableCell>
               </TableRow>
             ) : (
               contributors.map((contributor, index) => (
                 <TableRow key={contributor.id} className="hover:bg-background">
-                  <TableCell className="font-medium text-center">
-                    {index + 1}
-                  </TableCell>
+                  <TableCell className="text-center font-medium">{index + 1}</TableCell>
                   <TableCell>
                     <div>
                       <p className="font-medium">{contributor.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {contributor.email ? contributor.email : 'No email'}
+                      <p className="text-muted-foreground text-xs">
+                        {contributor.email ? contributor.email : "No email"}
                       </p>
                     </div>
                   </TableCell>
@@ -112,16 +78,14 @@ export function ContributorList({
                   <TableCell className="text-right font-mono">
                     {getTotalContributionsPaid(contributor.paymentSchedules)}
                   </TableCell>
-                  <TableCell className="text-center">
-                    {getLastPaymentDate(contributor.paymentSchedules)}
-                  </TableCell>
+                  <TableCell className="text-center">{getLastPaymentDate(contributor.paymentSchedules)}</TableCell>
                   <TableCell className="text-center">
                     {contributor.status === ContributorStatus.ACTIVE ? (
                       <Badge
                         variant="secondary"
                         className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
                       >
-                        <CheckCircleIcon className="w-3 h-3 mr-1" />
+                        <CheckCircleIcon className="mr-1 h-3 w-3" />
                         Active
                       </Badge>
                     ) : (
@@ -129,12 +93,12 @@ export function ContributorList({
                         variant="secondary"
                         className="bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
                       >
-                        <XCircleIcon className="w-3 h-3 mr-1" />
+                        <XCircleIcon className="mr-1 h-3 w-3" />
                         Inactive
                       </Badge>
                     )}
                   </TableCell>
-                  <TableCell className="text-center space-x-3">
+                  <TableCell className="space-x-3 text-center">
                     <ContributorEditFormDialog contributor={contributor} />
                     <ContributorDeleteDialog contributor={contributor} />
                   </TableCell>

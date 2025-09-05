@@ -1,14 +1,15 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { useTheme } from 'next-themes';
-import * as React from 'react';
+import * as React from "react";
+import { useTheme } from "next-themes";
+
+import { Button } from "@/components/ui/button";
 
 export function ThemeToggler() {
   const { setTheme, resolvedTheme } = useTheme();
 
   const toggleTheme = React.useCallback(() => {
-    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
   }, [resolvedTheme, setTheme]);
 
   return (

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { GlobeIcon, Loader2Icon } from 'lucide-react';
-import NextImage from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+import NextImage from "next/image";
+import { GlobeIcon, Loader2Icon } from "lucide-react";
 
 export function useFaviconOfUrl(url: string) {
   const [favicon, setFavicon] = useState<string>();
@@ -40,33 +40,16 @@ export function useFaviconOfUrl(url: string) {
   return { favicon, pending };
 }
 
-export function FaviconImage({
-  url,
-  size = 16,
-}: {
-  url: string;
-  size?: number;
-}) {
+export function FaviconImage({ url, size = 16 }: { url: string; size?: number }) {
   const { favicon, pending } = useFaviconOfUrl(url);
 
   if (!url) return <GlobeIcon size={size} className="text-muted-foreground" />;
 
-  if (pending)
-    return (
-      <Loader2Icon size={size} className="text-muted-foreground animate-spin" />
-    );
+  if (pending) return <Loader2Icon size={size} className="text-muted-foreground animate-spin" />;
 
-  if (!favicon)
-    return <GlobeIcon size={size} className="text-muted-foreground" />;
+  if (!favicon) return <GlobeIcon size={size} className="text-muted-foreground" />;
 
   return (
-    <NextImage
-      unoptimized
-      src={favicon}
-      alt=""
-      width={size}
-      height={size}
-      className="rounded-full object-contain"
-    />
+    <NextImage unoptimized src={favicon} alt="" width={size} height={size} className="rounded-full object-contain" />
   );
 }

@@ -1,22 +1,24 @@
-import { ClerkProvider } from '@/components/clerk-provider';
-import { Header } from '@/components/header';
-import { ThemeProvider } from '@/components/theme-provider';
-import { Footer } from '@/components/ui/footer';
-import { Toaster } from '@/components/ui/sonner';
-import { app } from '@/lib/config';
-import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
-import NextTopLoader from 'nextjs-toploader';
-import './globals.css';
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import NextTopLoader from "nextjs-toploader";
+
+import { ClerkProvider } from "@/components/clerk-provider";
+import { Header } from "@/components/header";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Footer } from "@/components/ui/footer";
+import { Toaster } from "@/components/ui/sonner";
+import { app } from "@/lib/config";
+
+import "./globals.css";
 
 const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
@@ -46,17 +48,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" className="h-full" suppressHydrationWarning>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} min-h-full antialiased`}
-        >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem={false}
-            disableTransitionOnChange
-          >
+        <body className={`${geistSans.variable} ${geistMono.variable} min-h-full antialiased`}>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
             <NextTopLoader color={app.primaryColor} />
-            <div className="relative overflow-hidden flex flex-col min-h-screen">
+            <div className="relative flex min-h-screen flex-col overflow-hidden">
               <Header />
               <main className="flex-1 py-4">{children}</main>
               <Footer />

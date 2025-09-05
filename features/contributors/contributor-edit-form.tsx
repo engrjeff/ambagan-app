@@ -1,7 +1,14 @@
-'use client';
+"use client";
 
-import { Contributor } from '@/app/generated/prisma';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PencilIcon } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
+import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
+
+import { Contributor } from "@/app/generated/prisma";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,32 +16,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { NumberInput } from '@/components/ui/number-input';
-import { SubmitButton } from '@/components/ui/submit-button';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { PencilIcon } from 'lucide-react';
-import { useAction } from 'next-safe-action/hooks';
-import { useState } from 'react';
-import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { updateContributor } from './actions';
-import { ContributorEditInputs, contributorEditSchema } from './schema';
+} from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { NumberInput } from "@/components/ui/number-input";
+import { SubmitButton } from "@/components/ui/submit-button";
+import { updateContributor } from "./actions";
+import { ContributorEditInputs, contributorEditSchema } from "./schema";
 
-export function ContributorEditFormDialog({
-  contributor,
-}: {
-  contributor: Contributor;
-}) {
+export function ContributorEditFormDialog({ contributor }: { contributor: Contributor }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -44,38 +34,26 @@ export function ContributorEditFormDialog({
           <PencilIcon />
         </Button>
       </DialogTrigger>
-      <DialogContent
-        className="sm:max-w-[425px]"
-        onInteractOutside={(e) => e.preventDefault()}
-      >
+      <DialogContent className="sm:max-w-[425px]" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>Update {contributor.name}</DialogTitle>
           <DialogDescription>Make sure to save your changes.</DialogDescription>
         </DialogHeader>
-        <ContributorEditForm
-          contributor={contributor}
-          onAfterSave={() => setOpen(false)}
-        />
+        <ContributorEditForm contributor={contributor} onAfterSave={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   );
 }
 
-function ContributorEditForm({
-  onAfterSave,
-  contributor,
-}: {
-  onAfterSave: VoidFunction;
-  contributor: Contributor;
-}) {
+function ContributorEditForm({ onAfterSave, contributor }: { onAfterSave: VoidFunction; contributor: Contributor }) {
   const form = useForm<ContributorEditInputs>({
     resolver: zodResolver(contributorEditSchema),
     defaultValues: {
       id: contributor.id,
       name: contributor.name,
       contributionAmount: contributor.contributionAmount,
-      email: contributor.email ?? '',
-      phoneNumber: contributor.phoneNumber ?? '',
+      email: contributor.email ?? "",
+      phoneNumber: contributor.phoneNumber ?? "",
     },
   });
 
@@ -136,10 +114,7 @@ function ContributorEditForm({
               <FormItem>
                 <FormLabel>Contribution Amount</FormLabel>
                 <FormControl>
-                  <NumberInput
-                    usePeso
-                    {...form.register(field.name, { valueAsNumber: true })}
-                  />
+                  <NumberInput usePeso {...form.register(field.name, { valueAsNumber: true })} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -151,10 +126,7 @@ function ContributorEditForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Email{' '}
-                  <span className="text-xs italic text-muted-foreground">
-                    Optional
-                  </span>
+                  Email <span className="text-muted-foreground text-xs italic">Optional</span>
                 </FormLabel>
                 <FormControl>
                   <Input type="email" placeholder="Email" {...field} />
@@ -169,24 +141,16 @@ function ContributorEditForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Phone{' '}
-                  <span className="text-xs italic text-muted-foreground">
-                    Optional
-                  </span>
+                  Phone <span className="text-muted-foreground text-xs italic">Optional</span>
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    type="tel"
-                    inputMode="tel"
-                    placeholder="+639XXXXXXXXX"
-                    {...field}
-                  />
+                  <Input type="tel" inputMode="tel" placeholder="+639XXXXXXXXX" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <div className="pt-6 flex items-center justify-end gap-3">
+          <div className="flex items-center justify-end gap-3 pt-6">
             <Button type="button" variant="ghost" onClick={handleClose}>
               Cancel
             </Button>

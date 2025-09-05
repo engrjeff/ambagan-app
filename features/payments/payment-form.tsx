@@ -1,11 +1,15 @@
-'use client';
+"use client";
 
-import {
-  Contributor,
-  PaymentMethod,
-  PaymentSchedule,
-} from '@/app/generated/prisma';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { useSession } from "@clerk/nextjs";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { useAction } from "next-safe-action/hooks";
+import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
+
+import { Contributor, PaymentMethod, PaymentSchedule } from "@/app/generated/prisma";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -13,33 +17,19 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { ImageInput } from '@/components/ui/image-input';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { NumberInput } from '@/components/ui/number-input';
-import { SelectNative } from '@/components/ui/select-native';
-import { SubmitButton } from '@/components/ui/submit-button';
-import { Textarea } from '@/components/ui/textarea';
-import { uploadProofOfPayment } from '@/lib/services';
-import { formatDate } from '@/lib/utils';
-import { useSession } from '@clerk/nextjs';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { format } from 'date-fns';
-import { useAction } from 'next-safe-action/hooks';
-import { useState } from 'react';
-import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { createPaymentRecord } from './actions';
-import { PaymentInputs, paymentSchema } from './schema';
+} from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { ImageInput } from "@/components/ui/image-input";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { NumberInput } from "@/components/ui/number-input";
+import { SelectNative } from "@/components/ui/select-native";
+import { SubmitButton } from "@/components/ui/submit-button";
+import { Textarea } from "@/components/ui/textarea";
+import { uploadProofOfPayment } from "@/lib/services";
+import { formatDate } from "@/lib/utils";
+import { createPaymentRecord } from "./actions";
+import { PaymentInputs, paymentSchema } from "./schema";
 
 interface Props {
   schedule: PaymentSchedule;
@@ -55,17 +45,12 @@ export function PaymentFormDialog(props: Props) {
       <DialogTrigger asChild>
         <Button variant="link">Mark as Paid</Button>
       </DialogTrigger>
-      <DialogContent
-        className="sm:max-w-[500px]"
-        onInteractOutside={(e) => e.preventDefault()}
-      >
+      <DialogContent className="sm:max-w-[500px]" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>Add Payment Record</DialogTitle>
           <DialogDescription>
-            Payment of {props.contributor.name} for{' '}
-            <span className="text-foreground">
-              {formatDate(props.schedule.scheduledPaymentDate.toISOString())}
-            </span>
+            Payment of {props.contributor.name} for{" "}
+            <span className="text-foreground">{formatDate(props.schedule.scheduledPaymentDate.toISOString())}</span>
           </DialogDescription>
         </DialogHeader>
 
@@ -75,23 +60,18 @@ export function PaymentFormDialog(props: Props) {
   );
 }
 
-function PaymentForm({
-  onAfterSave,
-  schedule,
-  contributor,
-  projectName,
-}: Props & { onAfterSave: VoidFunction }) {
+function PaymentForm({ onAfterSave, schedule, contributor, projectName }: Props & { onAfterSave: VoidFunction }) {
   const session = useSession();
 
   const form = useForm<PaymentInputs>({
     resolver: zodResolver(paymentSchema),
     defaultValues: {
       scheduleId: schedule.id,
-      paymentDate: '',
+      paymentDate: "",
       actualAmountPaid: contributor.contributionAmount,
       paymentMethod: PaymentMethod.CASH,
-      proofOfPayment: '',
-      note: '',
+      proofOfPayment: "",
+      note: "",
     },
   });
 
@@ -129,7 +109,7 @@ function PaymentForm({
         });
 
         if (uploadResult.error) {
-          toast.error('Error uploading file.');
+          toast.error("Error uploading file.");
           return;
         }
 
@@ -174,10 +154,7 @@ function PaymentForm({
               <FormItem>
                 <FormLabel>Amount Paid</FormLabel>
                 <FormControl>
-                  <NumberInput
-                    usePeso
-                    {...form.register(field.name, { valueAsNumber: true })}
-                  />
+                  <NumberInput usePeso {...form.register(field.name, { valueAsNumber: true })} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -191,11 +168,7 @@ function PaymentForm({
                 <FormItem>
                   <FormLabel>Payment Date</FormLabel>
                   <FormControl>
-                    <Input
-                      type="date"
-                      max={format(new Date(), 'yyyy-MM-dd')}
-                      {...field}
-                    />
+                    <Input type="date" max={format(new Date(), "yyyy-MM-dd")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -210,17 +183,9 @@ function PaymentForm({
                   <FormControl>
                     <SelectNative {...field}>
                       <option value="">Payment method</option>
-                      {[
-                        PaymentMethod.CASH,
-                        PaymentMethod.GCASH,
-                        PaymentMethod.BANK_TRANSFER,
-                      ].map((option) => (
-                        <option
-                          key={option}
-                          value={option}
-                          className="capitalize"
-                        >
-                          {option.replaceAll('_', ' ')}
+                      {[PaymentMethod.CASH, PaymentMethod.GCASH, PaymentMethod.BANK_TRANSFER].map((option) => (
+                        <option key={option} value={option} className="capitalize">
+                          {option.replaceAll("_", " ")}
                         </option>
                       ))}
                     </SelectNative>
@@ -252,7 +217,7 @@ function PaymentForm({
               <FormItem>
                 <FormControl>
                   <ImageInput
-                    src={form.watch('proofOfPayment')}
+                    src={form.watch("proofOfPayment")}
                     label="Proof of Payment"
                     desc="Upload proof of payment"
                     onChange={(file, src) => {
@@ -267,7 +232,7 @@ function PaymentForm({
               </FormItem>
             )}
           />
-          <div className="pt-6 flex items-center justify-end gap-3">
+          <div className="flex items-center justify-end gap-3 pt-6">
             <Button type="button" variant="ghost" onClick={handleClose}>
               Cancel
             </Button>

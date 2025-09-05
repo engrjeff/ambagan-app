@@ -1,22 +1,15 @@
-'use client';
+"use client";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import {
-  SubmitErrorHandler,
-  SubmitHandler,
-  useFieldArray,
-  useForm,
-} from 'react-hook-form';
-import { ContributorInputs, contributorSchema } from './schema';
+import { useState } from "react";
+import { useParams } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MinusIcon, PlusIcon, UserPlusIcon } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
+import { SubmitErrorHandler, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
-import { Button } from '@/components/ui/button';
+import { Project } from "@/app/generated/prisma";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -24,42 +17,29 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { MinusIcon, PlusIcon, UserPlusIcon } from 'lucide-react';
-
-import { Project } from '@/app/generated/prisma';
-import { Input } from '@/components/ui/input';
-import { NumberInput } from '@/components/ui/number-input';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { SubmitButton } from '@/components/ui/submit-button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useAction } from 'next-safe-action/hooks';
-import { useParams } from 'next/navigation';
-import { useState } from 'react';
-import { toast } from 'sonner';
-import { addContributors } from './actions';
+} from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { NumberInput } from "@/components/ui/number-input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { SubmitButton } from "@/components/ui/submit-button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { addContributors } from "./actions";
+import { ContributorInputs, contributorSchema } from "./schema";
 
 const dummy = [
-  'Jeff Segovia',
-  'Kim Lopez',
-  'Carlo Rosal',
-  'Aerol Allauigan',
-  'Daniel Baja',
-  'Chris Bernardo',
-  'Nathaniel Ablan',
-  'Kevin Yu',
-  'Cyrus Coligado',
-  'Eugene Ababa',
-  'Willy Ann Castelo',
-  'Mariz Segovia',
+  "Jeff Segovia",
+  "Kim Lopez",
+  "Carlo Rosal",
+  "Aerol Allauigan",
+  "Daniel Baja",
+  "Chris Bernardo",
+  "Nathaniel Ablan",
+  "Kevin Yu",
+  "Cyrus Coligado",
+  "Eugene Ababa",
+  "Willy Ann Castelo",
+  "Mariz Segovia",
 ];
 
 export function ContributorsFormDialog({ project }: { project: Project }) {
@@ -76,30 +56,19 @@ export function ContributorsFormDialog({ project }: { project: Project }) {
         showCloseButton={false}
         onEscapeKeyDown={(e) => e.preventDefault()}
         onInteractOutside={(e) => e.preventDefault()}
-        className="sm:max-w-4xl px-0 gap-0 pb-0"
+        className="gap-0 px-0 pb-0 sm:max-w-4xl"
       >
         <DialogHeader className="border-b px-6 pb-6">
           <DialogTitle>Add Contributors</DialogTitle>
-          <DialogDescription>
-            Fill out the form below with the contributors&apos; details.
-          </DialogDescription>
+          <DialogDescription>Fill out the form below with the contributors&apos; details.</DialogDescription>
         </DialogHeader>
-        <ContributorsForm
-          project={project}
-          onAfterSave={() => setOpen(false)}
-        />
+        <ContributorsForm project={project} onAfterSave={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   );
 }
 
-function ContributorsForm({
-  project,
-  onAfterSave,
-}: {
-  project: Project;
-  onAfterSave: VoidFunction;
-}) {
+function ContributorsForm({ project, onAfterSave }: { project: Project; onAfterSave: VoidFunction }) {
   const { projectId } = useParams<{ projectId: string }>();
 
   const debug = false;
@@ -112,26 +81,26 @@ function ContributorsForm({
         ? dummy.map((d) => ({
             name: d,
             contributionAmount: project.defaultContributionAmount,
-            email: '',
-            phoneNumber: '',
+            email: "",
+            phoneNumber: "",
           }))
         : [
             {
-              name: '',
-              email: '',
-              phoneNumber: '',
+              name: "",
+              email: "",
+              phoneNumber: "",
               contributionAmount: project.defaultContributionAmount,
             },
             {
-              name: '',
-              email: '',
-              phoneNumber: '',
+              name: "",
+              email: "",
+              phoneNumber: "",
               contributionAmount: project.defaultContributionAmount,
             },
             {
-              name: '',
-              email: '',
-              phoneNumber: '',
+              name: "",
+              email: "",
+              phoneNumber: "",
               contributionAmount: project.defaultContributionAmount,
             },
           ],
@@ -140,7 +109,7 @@ function ContributorsForm({
 
   const contributorsFields = useFieldArray({
     control: form.control,
-    name: 'contributors',
+    name: "contributors",
   });
 
   const createAction = useAction(addContributors, {
@@ -179,29 +148,19 @@ function ContributorsForm({
 
   return (
     <Form {...form}>
-      <form
-        className="select-none"
-        autoComplete="off"
-        onSubmit={form.handleSubmit(onSubmit, onFormError)}
-      >
+      <form className="select-none" autoComplete="off" onSubmit={form.handleSubmit(onSubmit, onFormError)}>
         <fieldset disabled={isBusy} className="disabled:opacity-90">
-          <ScrollArea className="h-[400px] p-4 max-w-full">
+          <ScrollArea className="h-[400px] max-w-full p-4">
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-background">
                   <TableHead className="w-[250px]">Name</TableHead>
                   <TableHead>Contribution Amount</TableHead>
                   <TableHead>
-                    Email{' '}
-                    <span className="text-muted-foreground text-xs italic">
-                      (Optional)
-                    </span>
+                    Email <span className="text-muted-foreground text-xs italic">(Optional)</span>
                   </TableHead>
                   <TableHead>
-                    Phone{' '}
-                    <span className="text-muted-foreground text-xs italic">
-                      (Optional)
-                    </span>
+                    Phone <span className="text-muted-foreground text-xs italic">(Optional)</span>
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -219,7 +178,7 @@ function ContributorsForm({
                               <Input
                                 autoComplete="off"
                                 placeholder="Name"
-                                className="rounded-none dark:bg-background"
+                                className="dark:bg-background rounded-none"
                                 {...field}
                               />
                             </FormControl>
@@ -234,13 +193,11 @@ function ContributorsForm({
                         name={`contributors.${index}.contributionAmount`}
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="sr-only">
-                              Contribution Amount
-                            </FormLabel>
+                            <FormLabel className="sr-only">Contribution Amount</FormLabel>
                             <FormControl>
                               <NumberInput
                                 usePeso
-                                className="rounded-none dark:bg-background"
+                                className="dark:bg-background rounded-none"
                                 {...form.register(field.name, {
                                   valueAsNumber: true,
                                 })}
@@ -262,7 +219,7 @@ function ContributorsForm({
                               <Input
                                 type="email"
                                 placeholder="Email"
-                                className="rounded-none dark:bg-background"
+                                className="dark:bg-background rounded-none"
                                 {...field}
                               />
                             </FormControl>
@@ -277,15 +234,13 @@ function ContributorsForm({
                         name={`contributors.${index}.phoneNumber`}
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="sr-only">
-                              Phone Number
-                            </FormLabel>
+                            <FormLabel className="sr-only">Phone Number</FormLabel>
                             <FormControl>
                               <Input
                                 type="tel"
                                 inputMode="tel"
                                 placeholder="+639XXXXXXXXXX"
-                                className="rounded-none dark:bg-background"
+                                className="dark:bg-background rounded-none"
                                 {...field}
                               />
                             </FormControl>
@@ -314,28 +269,23 @@ function ContributorsForm({
             </Table>
           </ScrollArea>
 
-          <div className="p-4 flex items-center gap-4 border-t">
+          <div className="flex items-center gap-4 border-t p-4">
             <Button
               type="button"
               variant="secondary"
               onClick={() => {
                 contributorsFields.prepend({
-                  name: '',
+                  name: "",
                   contributionAmount: project.defaultContributionAmount,
-                  email: '',
-                  phoneNumber: '',
+                  email: "",
+                  phoneNumber: "",
                 });
               }}
             >
               <PlusIcon /> Add Row
             </Button>
 
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={handleClose}
-              className="ml-auto"
-            >
+            <Button type="button" variant="secondary" onClick={handleClose} className="ml-auto">
               Cancel
             </Button>
 

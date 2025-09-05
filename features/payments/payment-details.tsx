@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Contributor, PaymentSchedule } from '@/app/generated/prisma';
-import { Button } from '@/components/ui/button';
+import { Contributor, PaymentSchedule } from "@/app/generated/prisma";
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetClose,
@@ -11,14 +11,10 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
-import { PaymentDetailsContent } from './payment-details-content';
+} from "@/components/ui/sheet";
+import { PaymentDetailsContent } from "./payment-details-content";
 
-export function PaymentDetails({
-  payment,
-}: {
-  payment: PaymentSchedule & { contributor: Contributor };
-}) {
+export function PaymentDetails({ payment }: { payment: PaymentSchedule & { contributor: Contributor } }) {
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -27,9 +23,7 @@ export function PaymentDetails({
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Payment Details</SheetTitle>
-          <SheetDescription>
-            Showing the payment details of {payment.contributor.name}
-          </SheetDescription>
+          <SheetDescription>Showing the payment details of {payment.contributor.name}</SheetDescription>
         </SheetHeader>
 
         <PaymentDetailsContent payment={payment} />

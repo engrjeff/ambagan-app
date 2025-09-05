@@ -1,46 +1,33 @@
-'use client';
+"use client";
 
-import { Project } from '@/app/generated/prisma';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { NumberInput } from '@/components/ui/number-input';
-import { SubmitButton } from '@/components/ui/submit-button';
-import { Textarea } from '@/components/ui/textarea';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useAction } from 'next-safe-action/hooks';
-import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { updateProject } from './actions';
-import { colors, ColorSelect } from './color-select';
-import { IconInput } from './icon-input';
-import { ProjectEditInputs, projectEditSchema } from './schema';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useAction } from "next-safe-action/hooks";
+import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
+
+import { Project } from "@/app/generated/prisma";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { NumberInput } from "@/components/ui/number-input";
+import { SubmitButton } from "@/components/ui/submit-button";
+import { Textarea } from "@/components/ui/textarea";
+import { updateProject } from "./actions";
+import { colors, ColorSelect } from "./color-select";
+import { IconInput } from "./icon-input";
+import { ProjectEditInputs, projectEditSchema } from "./schema";
 
 export function ProjectEditForm({ project }: { project: Project }) {
   const form = useForm<ProjectEditInputs>({
     resolver: zodResolver(projectEditSchema),
     defaultValues: {
       id: project.id,
-      title: project?.title ?? '',
-      description: project?.description ?? '',
+      title: project?.title ?? "",
+      description: project?.description ?? "",
       targetAmount: project?.targetAmount ?? 0,
       defaultContributionAmount: project?.defaultContributionAmount ?? 0,
-      icon: project?.icon ?? 'home',
+      icon: project?.icon ?? "home",
       color: project?.color ?? colors[0].value,
     },
   });
@@ -63,9 +50,7 @@ export function ProjectEditForm({ project }: { project: Project }) {
       const result = await updateAction.executeAsync(data);
 
       if (result.data?.project) {
-        toast.success(
-          `${result.data?.project?.title} was successfully updated!`
-        );
+        toast.success(`${result.data?.project?.title} was successfully updated!`);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -83,9 +68,7 @@ export function ProjectEditForm({ project }: { project: Project }) {
       <Card className="bg-background">
         <CardHeader className="border-b">
           <CardTitle>{project.title}</CardTitle>
-          <CardDescription>
-            Project details. Make sure to save your changes.
-          </CardDescription>
+          <CardDescription>Project details. Make sure to save your changes.</CardDescription>
         </CardHeader>
         <form onSubmit={form.handleSubmit(onSubmit, onFormError)}>
           <fieldset disabled={isBusy} className="disabled:opacity-90">
@@ -97,11 +80,7 @@ export function ProjectEditForm({ project }: { project: Project }) {
                   <FormItem>
                     <FormLabel>Title</FormLabel>
                     <FormControl>
-                      <Input
-                        autoFocus
-                        placeholder="Enter project title"
-                        {...field}
-                      />
+                      <Input autoFocus placeholder="Enter project title" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -115,18 +94,14 @@ export function ProjectEditForm({ project }: { project: Project }) {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Textarea
-                        placeholder="Describe your project"
-                        rows={3}
-                        {...field}
-                      />
+                      <Textarea placeholder="Describe your project" rows={3} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <div className="grid grid-cols-2 gap-4 items-start">
+              <div className="grid grid-cols-2 items-start gap-4">
                 <FormField
                   control={form.control}
                   name="targetAmount"
@@ -170,7 +145,7 @@ export function ProjectEditForm({ project }: { project: Project }) {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4 items-start">
+              <div className="grid grid-cols-2 items-start gap-4">
                 <FormField
                   control={form.control}
                   name="color"
@@ -178,11 +153,7 @@ export function ProjectEditForm({ project }: { project: Project }) {
                     <FormItem>
                       <FormLabel>Color</FormLabel>
                       <FormControl>
-                        <ColorSelect
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          className="w-full"
-                        />
+                        <ColorSelect value={field.value} onValueChange={field.onChange} className="w-full" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -196,11 +167,7 @@ export function ProjectEditForm({ project }: { project: Project }) {
                     <FormItem>
                       <FormLabel>Icon</FormLabel>
                       <FormControl>
-                        <IconInput
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          className="w-full"
-                        />
+                        <IconInput value={field.value} onValueChange={field.onChange} className="w-full" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -209,7 +176,7 @@ export function ProjectEditForm({ project }: { project: Project }) {
               </div>
             </CardContent>
 
-            <CardFooter className="pt-6 border-t justify-end gap-4">
+            <CardFooter className="justify-end gap-4 border-t pt-6">
               <Button type="button" variant="ghost" onClick={handleReset}>
                 Reset
               </Button>

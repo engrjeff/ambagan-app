@@ -1,18 +1,12 @@
-import { PaymentSchedule, Project } from '@/app/generated/prisma';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
-import { formatCurrency, formatDate } from '@/lib/utils';
-import { CalendarIcon, PackageIcon } from 'lucide-react';
-import Link from 'next/link';
+import Link from "next/link";
+import { CalendarIcon, PackageIcon } from "lucide-react";
+
+import { PaymentSchedule, Project } from "@/app/generated/prisma";
+import { Button } from "@/components/ui/button";
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import { formatCurrency, formatDate } from "@/lib/utils";
 
 export function TopContributors({
   project,
@@ -26,47 +20,29 @@ export function TopContributors({
     contributionAmount: number;
   }>;
 }) {
-  const totalContributions = topContributors.reduce(
-    (total, c) => total + c.totalPaid,
-    0
-  );
+  const totalContributions = topContributors.reduce((total, c) => total + c.totalPaid, 0);
 
   const percentage = (totalContributions / project.targetAmount) * 100;
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          {project.title}
-        </CardTitle>
-        <CardDescription className="line-clamp-1">
-          {project.description}
-        </CardDescription>
+        <CardTitle className="flex items-center gap-2">{project.title}</CardTitle>
+        <CardDescription className="line-clamp-1">{project.description}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
-        <div className="text-xs text-muted-foreground flex items-center gap-2 pb-2">
-          <CalendarIcon className="size-3" />{' '}
+        <div className="text-muted-foreground flex items-center gap-2 pb-2 text-xs">
+          <CalendarIcon className="size-3" />{" "}
           <p>
-            {formatDate(project.startDate.toISOString())} -{' '}
-            {formatDate(project.endDate.toISOString())}
+            {formatDate(project.startDate.toISOString())} - {formatDate(project.endDate.toISOString())}
           </p>
         </div>
         <div className="flex items-center justify-between gap-2">
-          <p className="text-xs font-medium font-mono">
-            Current: {formatCurrency(totalContributions)}
-          </p>
-          <p className="text-xs font-medium font-mono">
-            Target: {formatCurrency(project.targetAmount)}
-          </p>
+          <p className="font-mono text-xs font-medium">Current: {formatCurrency(totalContributions)}</p>
+          <p className="font-mono text-xs font-medium">Target: {formatCurrency(project.targetAmount)}</p>
         </div>
-        <Progress
-          value={percentage}
-          className="bg-white/10"
-          indicatorColor={project.color}
-        />
-        <p className="text-xs text-muted-foreground">
-          {percentage.toFixed(1)}% completed
-        </p>
+        <Progress value={percentage} className="bg-white/10" indicatorColor={project.color} />
+        <p className="text-muted-foreground text-xs">{percentage.toFixed(1)}% completed</p>
       </CardContent>
 
       <Separator />
@@ -76,9 +52,7 @@ export function TopContributors({
 
         <CardAction>
           <Button asChild variant="link" size="sm" className="px-0">
-            <Link href={`/projects/${project.id}?tab=contributors`}>
-              View All
-            </Link>
+            <Link href={`/projects/${project.id}?tab=contributors`}>View All</Link>
           </Button>
         </CardAction>
       </CardHeader>
@@ -89,28 +63,21 @@ export function TopContributors({
               <li key={c.id}>
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <p className="font-semibold text-sm">{c.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      <span className="font-mono">
-                        {formatCurrency(c.contributionAmount)}
-                      </span>{' '}
-                      / month
+                    <p className="text-sm font-semibold">{c.name}</p>
+                    <p className="text-muted-foreground text-xs">
+                      <span className="font-mono">{formatCurrency(c.contributionAmount)}</span> / month
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-green-500 font-mono">
-                      {formatCurrency(c.totalPaid)}
-                    </p>
-                    <p className="text-xs text-muted-foreground text-right">
-                      Total Paid
-                    </p>
+                    <p className="font-mono text-sm text-green-500">{formatCurrency(c.totalPaid)}</p>
+                    <p className="text-muted-foreground text-right text-xs">Total Paid</p>
                   </div>
                 </div>
               </li>
             ))}
           </ul>
         ) : (
-          <div className="text-center text-muted-foreground h-[200px] flex gap-4 flex-col items-center justify-center">
+          <div className="text-muted-foreground flex h-[200px] flex-col items-center justify-center gap-4 text-center">
             <PackageIcon className="size-5" />
             <p className="text-sm">No payments made yet.</p>
           </div>

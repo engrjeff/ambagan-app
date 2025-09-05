@@ -1,6 +1,6 @@
-import { v2 as cloudinary } from 'cloudinary';
-import { NextResponse } from 'next/server';
-import slugify from 'slugify';
+import { NextResponse } from "next/server";
+import { v2 as cloudinary } from "cloudinary";
+import slugify from "slugify";
 
 export async function POST(request: Request) {
   try {
@@ -19,11 +19,7 @@ export async function POST(request: Request) {
       api_secret: process.env.CLOUDINARY_API_SECRET,
     });
 
-    const publicId = [
-      slugify(projectName.toLowerCase()),
-      userId,
-      contributor,
-    ].join('-');
+    const publicId = [slugify(projectName.toLowerCase()), userId, contributor].join("-");
 
     const paramsToSign = {
       folder,
@@ -32,10 +28,7 @@ export async function POST(request: Request) {
       upload_preset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
     };
 
-    const signature = cloudinary.utils.api_sign_request(
-      paramsToSign,
-      process.env.CLOUDINARY_API_SECRET!
-    );
+    const signature = cloudinary.utils.api_sign_request(paramsToSign, process.env.CLOUDINARY_API_SECRET!);
 
     const result = await cloudinary.uploader.upload(file, {
       upload_preset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
@@ -53,8 +46,7 @@ export async function POST(request: Request) {
     console.log(error);
     return NextResponse.json(
       {
-        error:
-          error instanceof Error ? error.message : 'Failed to upload image',
+        error: error instanceof Error ? error.message : "Failed to upload image",
       },
       { status: 500 }
     );
