@@ -40,7 +40,7 @@ export function QuickStatistics(props: {
   );
 
   return (
-    <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 w-full">
+    <dl className="grid grid-cols-1 gap-4 md:grid-cols-3 w-full">
       {data.map((item) => (
         <Card key={item.name} className="p-0 gap-0">
           <CardContent className="p-6 relative">
