@@ -64,21 +64,21 @@ async function ProjectContributorsPage({ params, searchParams }: PageProps) {
       {/* top bar */}
       <div className="flex items-center gap-4">
         <ProjectIcon iconName={project.icon} color={project.color} />
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="font-semibold">{project.title}</h1>
-            <Button variant="ghost" size="icon" asChild aria-label="go to Project settings">
-              <Link
-                href={{
-                  pathname: `/projects/${project.id}`,
-                  query: { tab: "settings" },
-                }}
-              >
-                <PenLineIcon />
-              </Link>
-            </Button>
+        <div className="flex items-center gap-2">
+          <div>
+            <h1 className="text-sm font-semibold md:text-base">{project.title}</h1>
+            <p className="text-muted-foreground text-xs md:text-sm">{project.description}</p>
           </div>
-          <p className="text-muted-foreground text-sm">{project.description}</p>
+          <Button variant="ghost" size="icon" asChild aria-label="go to Project settings">
+            <Link
+              href={{
+                pathname: `/projects/${project.id}`,
+                query: { tab: "settings" },
+              }}
+            >
+              <PenLineIcon />
+            </Link>
+          </Button>
         </div>
         <div className="ml-auto hidden md:block">
           <Button variant="secondary" asChild>

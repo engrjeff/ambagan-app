@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MinusIcon, PlusIcon, UserPlusIcon } from "lucide-react";
+import { AlertCircleIcon, MinusIcon, PlusIcon } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { SubmitErrorHandler, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { Project } from "@/app/generated/prisma";
+import { Contributor, Project } from "@/app/generated/prisma";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,15 +43,19 @@ const dummy = [
   "Mariz Segovia",
 ];
 
-export function ContributorsFormDialog({ project }: { project: Project }) {
+export function ContributorsFormDialog({
+  project,
+  currentContributors,
+}: {
+  project: Project;
+  currentContributors: Contributor[];
+}) {
   const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <UserPlusIcon /> Add Contributor
-        </Button>
+        <Button size="sm">Add Contributor</Button>
       </DialogTrigger>
       <DialogContent
         showCloseButton={false}
@@ -62,13 +67,25 @@ export function ContributorsFormDialog({ project }: { project: Project }) {
           <DialogTitle>Add Contributors</DialogTitle>
           <DialogDescription>Fill out the form below with the contributors&apos; details.</DialogDescription>
         </DialogHeader>
-        <ContributorsForm project={project} onAfterSave={() => setOpen(false)} />
+        <ContributorsForm
+          project={project}
+          currentContributors={currentContributors}
+          onAfterSave={() => setOpen(false)}
+        />
       </DialogContent>
     </Dialog>
   );
 }
 
-function ContributorsForm({ project, onAfterSave }: { project: Project; onAfterSave: VoidFunction }) {
+function ContributorsForm({
+  project,
+  currentContributors,
+  onAfterSave,
+}: {
+  project: Project;
+  currentContributors: Contributor[];
+  onAfterSave: VoidFunction;
+}) {
   const { projectId } = useParams<{ projectId: string }>();
 
   const debug = false;
@@ -85,12 +102,6 @@ function ContributorsForm({ project, onAfterSave }: { project: Project; onAfterS
             phoneNumber: "",
           }))
         : [
-            {
-              name: "",
-              email: "",
-              phoneNumber: "",
-              contributionAmount: project.defaultContributionAmount,
-            },
             {
               name: "",
               email: "",
@@ -121,16 +132,42 @@ function ContributorsForm({ project, onAfterSave }: { project: Project; onAfterS
 
   const isBusy = createAction.isPending;
 
+  const currentContributorNames = new Set(currentContributors.map((c) => c.name.toLowerCase()));
+  const currentContributorEmails = new Set(currentContributors.map((c) => c.email?.toLowerCase()).filter(Boolean));
+
   const onFormError: SubmitErrorHandler<ContributorInputs> = (errors) => {
     console.log(`Contributors Form Errors: `, errors);
   };
 
   const onSubmit: SubmitHandler<ContributorInputs> = async (data) => {
     try {
+      const contributorValues = form.getValues("contributors");
+      // check for duplicate names against existing contributors
+      const duplicateNameIndex = contributorValues.findIndex((c) => currentContributorNames.has(c.name.toLowerCase()));
+
+      if (duplicateNameIndex !== -1) {
+        const i = contributorValues[duplicateNameIndex];
+        form.setError("root", { message: `${i.name} already exists.` });
+        form.setError(`contributors.${duplicateNameIndex}.name`, { message: `${i.name} already exists.` });
+        return;
+      }
+
+      // check for duplicate emails against existing contributors
+      const duplicateEmailIndex = contributorValues.findIndex((c) =>
+        currentContributorEmails.has(c.email?.toLowerCase())
+      );
+
+      if (duplicateEmailIndex !== -1) {
+        const i = contributorValues[duplicateEmailIndex];
+        form.setError("root", { message: `${i.email} is already in use.` });
+        form.setError(`contributors.${duplicateEmailIndex}.email`, { message: `${i.email} is already in use.` });
+        return;
+      }
+
       const result = await createAction.executeAsync(data);
 
       if (result.data?.success) {
-        toast.success(`${data?.contributors?.length} Contributors were added!`);
+        toast.success(`${data?.contributors?.length} contributors were added!`);
 
         onAfterSave();
       }
@@ -151,6 +188,15 @@ function ContributorsForm({ project, onAfterSave }: { project: Project; onAfterS
       <form className="select-none" autoComplete="off" onSubmit={form.handleSubmit(onSubmit, onFormError)}>
         <fieldset disabled={isBusy} className="disabled:opacity-90">
           <ScrollArea className="h-[400px] max-w-full p-4">
+            {form.formState.errors.root?.message ? (
+              <Alert variant="destructive">
+                <AlertCircleIcon />
+                <AlertTitle>Please fix the duplicate values.</AlertTitle>
+                <AlertDescription>
+                  <p>{form.formState.errors.root?.message}</p>
+                </AlertDescription>
+              </Alert>
+            ) : null}
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-background">

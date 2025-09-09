@@ -35,7 +35,7 @@ export function RecentPayments({
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="border-b">
         <CardTitle>Recent Payments</CardTitle>
         <CardDescription>for {monthOf}</CardDescription>
         {hasRecentPayments ? (
@@ -48,11 +48,11 @@ export function RecentPayments({
           </CardAction>
         ) : null}
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-0">
         {hasRecentPayments ? (
           <ul className="space-y-2">
             {recentPayments.slice(0, 5).map((payment) => (
-              <li key={payment.contributorId}>
+              <li key={payment.contributorId} className="mx-4">
                 <RecentPaymentItem payment={payment} />
               </li>
             ))}

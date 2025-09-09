@@ -33,11 +33,34 @@ export const contributorSchema = z.object({
       if (uniqueItemsCount !== items.length) {
         ctx.addIssue({
           code: "custom",
-          message: `Already exists.`,
+          message: `${items[errorPosition]?.name} already exists.`,
           path: [errorPosition, "name"],
         });
       }
+
+      // email check
+      const uniqueEmailCount = new Set(items.map((item) => item.email?.toLowerCase()).filter(Boolean)).size;
+
+      const errorEmailPosition = items.length - 1;
+
+      if (uniqueEmailCount !== items.length) {
+        if (items[errorEmailPosition]?.email) {
+          ctx.addIssue({
+            code: "custom",
+            message: `${items[errorEmailPosition]?.email} already exists.`,
+            path: [errorEmailPosition, "email"],
+          });
+        }
+      }
     }),
 });
+
+export const singleContributorSchema = z
+  .object({
+    projectId: z.string({ error: "Project is required." }),
+  })
+  .extend(contributorItemSchema.shape);
+
+export type SingleContributorInputs = z.infer<typeof singleContributorSchema>;
 
 export type ContributorInputs = z.infer<typeof contributorSchema>;

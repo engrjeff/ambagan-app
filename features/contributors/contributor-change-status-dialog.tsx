@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { TrashIcon } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { toast } from "sonner";
 
-import { Contributor, ContributorStatus } from "@/app/generated/prisma";
+import { Contributor } from "@/app/generated/prisma";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -18,26 +17,26 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { SubmitButton } from "@/components/ui/submit-button";
-import { deleteContributor } from "./actions";
+import { makeContributorActive } from "./actions";
 
-export function ContributorDeleteDialog({ contributor }: { contributor: Contributor }) {
+export function ContributorChangeStatusDialog({ contributor }: { contributor: Contributor }) {
   const [open, setOpen] = useState(false);
 
-  const deleteAction = useAction(deleteContributor, {
+  const updateAction = useAction(makeContributorActive, {
     onError: ({ error }) => {
       console.error(error);
-      toast.error(error.serverError ?? `Error removing contributor`);
+      toast.error(error.serverError ?? `Error updating contributor status`);
     },
   });
 
-  const isBusy = deleteAction.isPending;
+  const isBusy = updateAction.isPending;
 
-  async function handleDelete() {
+  async function handleStatusChange() {
     try {
-      const result = await deleteAction.executeAsync({ id: contributor.id });
+      const result = await updateAction.executeAsync({ id: contributor.id });
 
-      if (result.data?.success) {
-        toast.success(`Contributor was removed!`);
+      if (result.data?.contributor) {
+        toast.success(`Contributor status updated!`);
 
         setOpen(false);
       }
@@ -51,26 +50,20 @@ export function ContributorDeleteDialog({ contributor }: { contributor: Contribu
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button
-          disabled={contributor.status === ContributorStatus.INACTIVE}
-          size="iconSm"
-          aria-label="Delete"
-          variant="ghost"
-        >
-          <TrashIcon />
+        <Button size="sm" variant="link">
+          Mark as Active
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>Make Status Active</AlertDialogTitle>
           <AlertDialogDescription>
-            This action will mark <span className="font-semibold underline">{contributor.name}</span> as an inactive
-            contributor.
+            This action will mark <span className="font-semibold underline">{contributor.name}</span> as ACTIVE.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isBusy}>Cancel</AlertDialogCancel>
-          <SubmitButton variant="destructive" loading={isBusy} onClick={handleDelete}>
+          <SubmitButton loading={isBusy} onClick={handleStatusChange}>
             Continue
           </SubmitButton>
         </AlertDialogFooter>

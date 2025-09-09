@@ -4,11 +4,13 @@ import { useState } from "react";
 import { useSession } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
+import { XCircleIcon } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { Contributor, PaymentMethod, PaymentSchedule } from "@/app/generated/prisma";
+import { Contributor, ContributorStatus, PaymentMethod, PaymentSchedule } from "@/app/generated/prisma";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -39,6 +41,14 @@ interface Props {
 
 export function PaymentFormDialog(props: Props) {
   const [open, setOpen] = useState(false);
+
+  if (props.contributor.status === ContributorStatus.INACTIVE)
+    return (
+      <Badge variant="secondary" className="bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400">
+        <XCircleIcon className="mr-1 h-3 w-3" />
+        Inactive
+      </Badge>
+    );
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

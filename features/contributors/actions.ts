@@ -14,7 +14,7 @@ import {
   startOfWeek,
 } from "date-fns";
 
-import { PaymentFrequency } from "@/app/generated/prisma";
+import { ContributorStatus, PaymentFrequency, PaymentMethod } from "@/app/generated/prisma";
 import { prisma } from "@/lib/prisma";
 import { authActionClient } from "@/lib/safe-action";
 import { contributorEditSchema, contributorIdSchema, contributorSchema } from "./schema";
@@ -180,6 +180,30 @@ export const updateContributor = authActionClient
     };
   });
 
+export const makeContributorActive = authActionClient
+  .metadata({ actionName: "makeContributorActive" })
+  .inputSchema(contributorIdSchema)
+  .action(async ({ parsedInput, ctx: { user } }) => {
+    if (!user?.userId) throw new Error("Session not found.");
+
+    const { id } = parsedInput;
+
+    const result = await prisma.contributor.update({
+      where: { id },
+      data: { status: ContributorStatus.ACTIVE },
+      select: {
+        id: true,
+        projectId: true,
+      },
+    });
+
+    revalidatePath(`/projects/${result.projectId}`);
+
+    return {
+      contributor: result,
+    };
+  });
+
 export const deleteContributor = authActionClient
   .metadata({ actionName: "deleteContributor" })
   .inputSchema(contributorIdSchema)
@@ -188,8 +212,28 @@ export const deleteContributor = authActionClient
 
     const { id } = parsedInput;
 
-    const result = await prisma.contributor.delete({
+    // if there are no paid payment schedules, delete the payment schedules of this contributor
+    const foundPaidPaymentSchedules = await prisma.paymentSchedule.findMany({
+      where: { contributorId: id, paymentMethod: { not: PaymentMethod.UNPAID } },
+    });
+
+    if (foundPaidPaymentSchedules.length === 0) {
+      await prisma.paymentSchedule.deleteMany({ where: { contributorId: id } });
+      const result = await prisma.contributor.delete({ where: { id } });
+
+      revalidatePath(`/projects/${result.projectId}`);
+
+      return {
+        success: true,
+      };
+    }
+
+    // soft delete!
+    const result = await prisma.contributor.update({
       where: { id },
+      data: {
+        status: ContributorStatus.INACTIVE,
+      },
     });
 
     revalidatePath(`/projects/${result.projectId}`);

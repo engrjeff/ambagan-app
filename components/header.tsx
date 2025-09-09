@@ -27,7 +27,7 @@ export function Header() {
             <Button asChild>
               <Link href="/projects">My Projects</Link>
             </Button>
-            <Separator orientation="vertical" className="h-full" />
+            <Separator orientation="vertical" />
             <UserButton />
           </SignedIn>
         </div>

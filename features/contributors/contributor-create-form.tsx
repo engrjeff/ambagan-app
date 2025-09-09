@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PencilIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { Contributor, ContributorStatus } from "@/app/generated/prisma";
+import { Project } from "@/app/generated/prisma";
+import { FloatingActionButton } from "@/components/floating-action-button";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,66 +22,71 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
 import { SubmitButton } from "@/components/ui/submit-button";
-import { updateContributor } from "./actions";
-import { ContributorEditInputs, contributorEditSchema } from "./schema";
+import { addContributors } from "./actions";
+import { SingleContributorInputs, singleContributorSchema } from "./schema";
 
-export function ContributorEditFormDialog({ contributor }: { contributor: Contributor }) {
+export function ContributorCreateFormDialog({ project }: { project: Project }) {
   const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          disabled={contributor.status === ContributorStatus.INACTIVE}
-          size="iconSm"
-          aria-label="Edit"
-          variant="ghost"
-        >
-          <PencilIcon />
-        </Button>
+        <FloatingActionButton>
+          <PlusIcon />
+        </FloatingActionButton>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
-          <DialogTitle>Update {contributor.name}</DialogTitle>
-          <DialogDescription>Make sure to save your changes.</DialogDescription>
+          <DialogTitle>Add Contributor</DialogTitle>
+          <DialogDescription>Fill out the form below.</DialogDescription>
         </DialogHeader>
-        <ContributorEditForm contributor={contributor} onAfterSave={() => setOpen(false)} />
+        <ContributorCreateForm project={project} onAfterSave={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   );
 }
 
-function ContributorEditForm({ onAfterSave, contributor }: { onAfterSave: VoidFunction; contributor: Contributor }) {
-  const form = useForm<ContributorEditInputs>({
-    resolver: zodResolver(contributorEditSchema),
+function ContributorCreateForm({ project, onAfterSave }: { project: Project; onAfterSave: VoidFunction }) {
+  const form = useForm<SingleContributorInputs>({
+    resolver: zodResolver(singleContributorSchema),
     defaultValues: {
-      id: contributor.id,
-      name: contributor.name,
-      contributionAmount: contributor.contributionAmount,
-      email: contributor.email ?? "",
-      phoneNumber: contributor.phoneNumber ?? "",
+      projectId: project.id,
+      name: "",
+      contributionAmount: project.defaultContributionAmount,
+      email: "",
+      phoneNumber: "",
     },
   });
 
-  const updateAction = useAction(updateContributor, {
+  const createAction = useAction(addContributors, {
     onError: ({ error }) => {
       console.error(error);
-      toast.error(error.serverError ?? `Error updating contributor`);
+      toast.error(error.serverError ?? `Error creating contributor`);
     },
   });
 
-  const isBusy = updateAction.isPending;
+  const isBusy = createAction.isPending;
 
-  const onFormError: SubmitErrorHandler<ContributorEditInputs> = (errors) => {
-    console.log(`Contributor Edit Form Errors: `, errors);
+  const onFormError: SubmitErrorHandler<SingleContributorInputs> = (errors) => {
+    console.log(`Contributor Add Form Errors: `, errors);
   };
 
-  const onSubmit: SubmitHandler<ContributorEditInputs> = async (data) => {
+  const onSubmit: SubmitHandler<SingleContributorInputs> = async (data) => {
     try {
-      const result = await updateAction.executeAsync(data);
+      const result = await createAction.executeAsync({
+        projectId: data.projectId,
+        contributors: [
+          {
+            name: data.name,
+            contributionAmount: data.contributionAmount,
+            email: data.email,
+            phoneNumber: data.phoneNumber,
+          },
+        ],
+      });
 
-      if (result.data?.contributor?.id) {
-        toast.success(`Changes saved!`);
+      if (result.data?.success) {
+        toast.success(`Contributor saved!`);
 
         onAfterSave();
       }
@@ -159,7 +165,7 @@ function ContributorEditForm({ onAfterSave, contributor }: { onAfterSave: VoidFu
             <Button type="button" variant="ghost" onClick={handleClose}>
               Cancel
             </Button>
-            <SubmitButton loading={isBusy}>Save Changes</SubmitButton>
+            <SubmitButton loading={isBusy}>Save</SubmitButton>
           </div>
         </fieldset>
       </form>

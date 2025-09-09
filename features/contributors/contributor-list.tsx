@@ -9,8 +9,11 @@ import { SearchField } from "@/components/ui/search-field";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatCurrency, getLastPaymentDate, getTotalContributionsPaid } from "@/lib/utils";
 import { ContributorsFormDialog } from "../contributors/contributors-form";
+import { ContributorChangeStatusDialog } from "./contributor-change-status-dialog";
+import { ContributorCreateFormDialog } from "./contributor-create-form";
 import { ContributorDeleteDialog } from "./contributor-delete-dialog";
 import { ContributorEditFormDialog } from "./contributor-edit-form";
+import { ContributorsImportDialog } from "./contributor-import-dialog";
 
 interface ContributorListProps {
   project: Project;
@@ -24,9 +27,15 @@ interface ContributorListProps {
 export function ContributorList({ project, contributors }: ContributorListProps) {
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center gap-4">
         <SearchField paramName="c" placeholder={`Search ${contributors.length} contributors`} />
-        <ContributorsFormDialog project={project} />
+        <div className="ml-auto hidden items-center gap-3 md:flex">
+          <ContributorsImportDialog project={project} currentContributors={contributors} />
+          <ContributorsFormDialog project={project} currentContributors={contributors} />
+        </div>
+        <div className="md:hidden">
+          <ContributorCreateFormDialog project={project} />
+        </div>
       </div>
 
       <div className="my-4 max-h-[60vh] overflow-x-auto rounded-md border pb-4">
@@ -99,8 +108,14 @@ export function ContributorList({ project, contributors }: ContributorListProps)
                     )}
                   </TableCell>
                   <TableCell className="space-x-3 text-center">
-                    <ContributorEditFormDialog contributor={contributor} />
-                    <ContributorDeleteDialog contributor={contributor} />
+                    {contributor.status === ContributorStatus.ACTIVE ? (
+                      <>
+                        <ContributorEditFormDialog contributor={contributor} />
+                        <ContributorDeleteDialog contributor={contributor} />
+                      </>
+                    ) : (
+                      <ContributorChangeStatusDialog contributor={contributor} />
+                    )}
                   </TableCell>
                 </TableRow>
               ))

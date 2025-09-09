@@ -18,7 +18,7 @@ export function PendingPayments({
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="border-b">
         <CardTitle>Pending Payments</CardTitle>
         <CardDescription>due on {monthOf}</CardDescription>
 
