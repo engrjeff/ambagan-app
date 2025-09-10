@@ -90,10 +90,10 @@ export function PaymentsList({ projectName, paymentSchedules, paymentDateOptions
           )}
         </div>
       </div>
-      <div className="my-4 max-h-[60vh] overflow-x-auto rounded-md border pb-4">
+      <div className="my-4 overflow-x-auto rounded-md border pb-4 [&>div]:max-h-[60vh]">
         <Table>
           <TableCaption>Payment history.</TableCaption>
-          <TableHeader className="bg-card">
+          <TableHeader className="bg-card sticky top-0 z-10 backdrop-blur-sm">
             <TableRow className="hover:bg-transparent">
               <TableHead className="w-4 text-center">#</TableHead>
               <TableHead>
