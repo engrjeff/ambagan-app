@@ -20,7 +20,7 @@ export function PendingPayments({
     <Card>
       <CardHeader className="border-b">
         <CardTitle>Pending Payments</CardTitle>
-        <CardDescription>due on {monthOf}</CardDescription>
+        <CardDescription>{hasPendingPayments ? `due on ${monthOf}` : ""}</CardDescription>
 
         {hasPendingPayments ? (
           <CardAction>

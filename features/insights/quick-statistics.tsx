@@ -45,7 +45,7 @@ export function QuickStatistics(props: {
               <span className="text-muted-foreground truncate text-sm">{item.name}</span>
               <div
                 className={cn(
-                  "absolute top-2 right-2 flex size-9 items-center justify-center rounded-xl",
+                  "absolute top-2 right-2 flex size-9 items-center justify-center rounded-lg",
                   item.iconClass
                 )}
               >

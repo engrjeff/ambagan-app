@@ -50,11 +50,13 @@ export function TopContributors({
       <CardHeader>
         <CardTitle>Top Contributors</CardTitle>
 
-        <CardAction>
-          <Button asChild variant="link" size="sm" className="px-0">
-            <Link href={`/projects/${project.id}?tab=contributors`}>View All</Link>
-          </Button>
-        </CardAction>
+        {topContributors.length ? (
+          <CardAction>
+            <Button asChild variant="link" size="sm" className="px-0">
+              <Link href={`/projects/${project.id}?tab=contributors`}>View All</Link>
+            </Button>
+          </CardAction>
+        ) : null}
       </CardHeader>
       <CardContent>
         {topContributors.length > 0 ? (

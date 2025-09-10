@@ -37,7 +37,7 @@ export function RecentPayments({
     <Card>
       <CardHeader className="border-b">
         <CardTitle>Recent Payments</CardTitle>
-        <CardDescription>for {monthOf}</CardDescription>
+        <CardDescription>{hasRecentPayments ? `for ${monthOf}` : ""}</CardDescription>
         {hasRecentPayments ? (
           <CardAction>
             <Button asChild variant="link" size="sm" className="p-0">

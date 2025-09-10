@@ -11,8 +11,8 @@ export function ProjectCard({ project }: { project: Project & { totalAmountPaid:
     <Card className="hover:bg-background py-4">
       <div className="flex items-center gap-4 px-4">
         <ProjectIcon iconName={project.icon} color={project.color} />
-        <div className="space-y-1.5">
-          <CardTitle className="flex items-center gap-2">{project.title}</CardTitle>
+        <div className="space-y-0">
+          <CardTitle className="flex items-center gap-2 text-sm">{project.title}</CardTitle>
           <CardDescription className="line-clamp-1">{project.description}</CardDescription>
         </div>
       </div>

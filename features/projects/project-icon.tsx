@@ -36,7 +36,7 @@ export function ProjectIcon({ iconName, color }: { iconName: string; color: stri
   }
 
   return (
-    <div className="relative size-9 rounded-xl">
+    <div className="relative size-10 rounded-md">
       <div className="size-full rounded-xl opacity-30" style={{ backgroundColor: color }}></div>
       <Icon size={16} color={color} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
     </div>
