@@ -33,7 +33,7 @@ async function ContributorDetailPage({ params }: PageProps) {
       <div className="flex items-center">
         <div>
           <h1 className="text-lg font-semibold">{contributor.name}</h1>
-          <p className="text-muted-foreground hidden text-sm md:block">
+          <p className="text-muted-foreground text-sm">
             Contributor for <span className="font-semibold">{contributor.project.title}</span>
           </p>
         </div>
