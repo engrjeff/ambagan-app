@@ -1,8 +1,9 @@
 "use client";
 
 import { ChangeEvent } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { AlertTriangleIcon, PackageIcon } from "lucide-react";
+import { useRouter } from "nextjs-toploader/app";
 
 import { Contributor, PaymentMethod, PaymentSchedule } from "@/app/generated/prisma";
 import { PaymentMethodBadge } from "@/components/payment-method-badge";
@@ -48,14 +49,15 @@ export function PaymentsList({ projectName, paymentSchedules, paymentDateOptions
 
   return (
     <>
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <SearchField paramName="c" placeholder="Search contributors" />
-        <div className="ml-auto flex items-center gap-4">
+        <div className="flex items-center gap-4 md:ml-auto">
           <SelectNative
             aria-label="filter by payment status"
             name="status"
             onChange={handleFilterChange}
             defaultValue={searchParams.get("status") ?? ""}
+            className="flex-1"
           >
             <option value="">Status</option>
             {[PaymentMethod.UNPAID, PaymentMethod.CASH, PaymentMethod.GCASH, PaymentMethod.BANK_TRANSFER].map((d) => (
@@ -70,6 +72,7 @@ export function PaymentsList({ projectName, paymentSchedules, paymentDateOptions
               name="date"
               aria-label="filter by schedule date"
               onChange={handleFilterChange}
+              className="flex-1"
             >
               <option value="">Select date</option>
               {paymentDateOptions.map((d) => (

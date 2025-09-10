@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 const SelectNative = ({ className, children, ...props }: React.ComponentProps<"select">) => {
   return (
-    <div className="relative flex">
+    <div className="relative flex flex-1">
       <select
         data-slot="select-native"
         className={cn(

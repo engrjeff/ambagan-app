@@ -1,8 +1,9 @@
 "use client";
 
 import { ReactNode } from "react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { ChartSplineIcon, PhilippinePesoIcon, SettingsIcon, UsersIcon } from "lucide-react";
+import { useRouter } from "nextjs-toploader/app";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
