@@ -3,7 +3,7 @@ import { CalendarIcon } from "lucide-react";
 import { Project } from "@/app/generated/prisma";
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatDate, toCompactWithCurrency } from "@/lib/utils";
 import { ProjectIcon } from "./project-icon";
 
 export function ProjectCard({ project }: { project: Project & { totalAmountPaid: number; percentage: number } }) {
@@ -24,11 +24,11 @@ export function ProjectCard({ project }: { project: Project & { totalAmountPaid:
           </p>
         </div>
         <div className="flex items-center justify-between gap-2">
-          <p className="font-mono text-xs font-medium">Current: {formatCurrency(project.totalAmountPaid)}</p>
-          <p className="font-mono text-xs font-medium">Target: {formatCurrency(project.targetAmount)}</p>
+          <p className="text-xs font-medium">Current: {toCompactWithCurrency(project.totalAmountPaid)}</p>
+          <p className="text-xs font-medium">Target: {toCompactWithCurrency(project.targetAmount)}</p>
         </div>
         <Progress value={project.percentage} className="bg-white/10" indicatorColor={project.color} />
-        <p className="text-muted-foreground font-mono text-xs">{project.percentage.toFixed(1)}% completed</p>
+        <p className="text-muted-foreground text-xs">{project.percentage.toFixed(1)}% completed</p>
       </CardContent>
     </Card>
   );

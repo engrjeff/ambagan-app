@@ -130,8 +130,8 @@ export function PaymentsList({ projectName, paymentSchedules, paymentDateOptions
                 <TableRow key={payment.id} className="hover:bg-background">
                   <TableCell className="text-center font-medium">{index + 1}</TableCell>
                   <TableCell>
-                    <Link href={`/contributors/${payment.contributor.id}`} className="group block">
-                      <p className="font-medium group-hover:underline">{payment.contributor.name}</p>
+                    <Link href={`/contributors/${payment.contributor.id}`} className="group block w-max">
+                      <p className="font-medium underline group-hover:no-underline">{payment.contributor.name}</p>
                       <p className="text-muted-foreground text-xs">
                         {payment.contributor.email ? payment.contributor.email : "No email"}
                       </p>

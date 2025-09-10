@@ -2,7 +2,7 @@ import { cache, Suspense } from "react";
 import { type Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeftIcon, PencilIcon, PenLineIcon } from "lucide-react";
+import { ArrowLeftIcon, PenLineIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -77,18 +77,6 @@ async function ProjectContributorsPage({ params, searchParams }: PageProps) {
               }}
             >
               <PenLineIcon />
-            </Link>
-          </Button>
-        </div>
-        <div className="ml-auto hidden md:block">
-          <Button variant="secondary" asChild>
-            <Link
-              href={{
-                pathname: `/projects/${project.id}`,
-                query: { tab: "settings" },
-              }}
-            >
-              <PencilIcon /> Update
             </Link>
           </Button>
         </div>

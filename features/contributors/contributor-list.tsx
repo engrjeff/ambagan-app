@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { CheckCircleIcon, PackageIcon, XCircleIcon } from "lucide-react";
+import { CheckIcon, PackageIcon, XCircleIcon } from "lucide-react";
 
 import { Contributor, ContributorStatus, PaymentSchedule, Project } from "@/app/generated/prisma";
 import { SortLink } from "@/components/sort-link";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SearchField } from "@/components/ui/search-field";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatCurrency, getLastPaymentDate, getTotalContributionsPaid } from "@/lib/utils";
@@ -28,9 +29,9 @@ interface ContributorListProps {
 export function ContributorList({ project, contributors }: ContributorListProps) {
   return (
     <>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center md:gap-4">
         <SearchField paramName="c" placeholder={`Search ${contributors.length} contributors`} />
-        <div className="ml-auto hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-3 md:ml-auto md:flex">
           <ContributorsImportDialog project={project} currentContributors={contributors} />
           <ContributorsFormDialog project={project} currentContributors={contributors} />
         </div>
@@ -39,10 +40,77 @@ export function ContributorList({ project, contributors }: ContributorListProps)
         </div>
       </div>
 
-      <div className="my-4 max-h-[60vh] overflow-x-auto rounded-md border pb-4">
+      {/* for mobile */}
+      <div className="mt-4 md:hidden">
+        {contributors.length > 0 ? (
+          <ul className="space-y-3">
+            {contributors.map((contributor) => (
+              <li key={`mobile-${contributor.id}`}>
+                <Card className="group-hover:bg-card/70 py-3">
+                  <CardHeader className="px-3">
+                    {contributor.status === ContributorStatus.ACTIVE ? (
+                      <Badge
+                        variant="secondary"
+                        className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
+                      >
+                        <CheckIcon className="mr-1 h-3 w-3" />
+                        Active
+                      </Badge>
+                    ) : (
+                      <Badge
+                        variant="secondary"
+                        className="bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
+                      >
+                        <XCircleIcon className="mr-1 h-3 w-3" />
+                        Inactive
+                      </Badge>
+                    )}
+                    <Link href={`/contributors/${contributor.id}`} className="group">
+                      <CardTitle className="text-sm">{contributor.name}</CardTitle>
+                    </Link>
+
+                    <CardAction>
+                      {contributor.status === ContributorStatus.ACTIVE ? (
+                        <>
+                          <ContributorEditFormDialog contributor={contributor} />
+                        </>
+                      ) : (
+                        <ContributorChangeStatusDialog contributor={contributor} />
+                      )}
+                    </CardAction>
+                  </CardHeader>
+                  <CardContent className="px-3">
+                    <CardDescription className="text-xs">
+                      Commitment: <span className="font-mono">{formatCurrency(contributor.contributionAmount)}</span>
+                    </CardDescription>
+                    <CardDescription className="text-xs">
+                      Total Paid:
+                      <span className="font-mono"> {getTotalContributionsPaid(contributor.paymentSchedules)}</span>
+                    </CardDescription>
+                    <CardDescription className="text-xs">
+                      Last Payment: <span>{getLastPaymentDate(contributor.paymentSchedules)}</span>
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="flex h-[60vh] flex-col items-center justify-center rounded-md border border-dashed p-4">
+            <div className="bg-muted/50 dark:bg-muted/20 mb-3 rounded-full p-2">
+              <PackageIcon className="text-muted-foreground size-6" />
+            </div>
+            <p className="text-muted-foreground text-sm font-medium">No contributors found</p>
+            <p className="text-muted-foreground mt-1 text-xs">Add contributors now.</p>
+          </div>
+        )}
+      </div>
+
+      {/* for large screens */}
+      <div className="my-4 hidden overflow-x-auto rounded-md border pb-4 md:block [&>div]:max-h-[60vh]">
         <Table>
           <TableCaption>A list of contributors for {project.title}.</TableCaption>
-          <TableHeader className="bg-card">
+          <TableHeader className="bg-card sticky top-0 z-10 backdrop-blur-sm">
             <TableRow className="hover:bg-transparent">
               <TableHead className="w-4 text-center">#</TableHead>
               <TableHead>
@@ -75,8 +143,8 @@ export function ContributorList({ project, contributors }: ContributorListProps)
                 <TableRow key={contributor.id} className="hover:bg-background">
                   <TableCell className="text-center font-medium">{index + 1}</TableCell>
                   <TableCell>
-                    <Link href={`/contributors/${contributor.id}`} className="group block">
-                      <p className="font-medium group-hover:underline">{contributor.name}</p>
+                    <Link href={`/contributors/${contributor.id}`} title="View details" className="group block w-max">
+                      <p className="font-medium underline group-hover:no-underline">{contributor.name}</p>
                       <p className="text-muted-foreground text-xs">
                         {contributor.email ? contributor.email : "No email"}
                       </p>
@@ -95,7 +163,7 @@ export function ContributorList({ project, contributors }: ContributorListProps)
                         variant="secondary"
                         className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
                       >
-                        <CheckCircleIcon className="mr-1 h-3 w-3" />
+                        <CheckIcon className="mr-1 h-3 w-3" />
                         Active
                       </Badge>
                     ) : (

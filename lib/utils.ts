@@ -40,7 +40,7 @@ export const formatDate = (dateString: string) => {
 export function getLastPaymentDate(contributions: PaymentSchedule[]) {
   const c = contributions.at(0);
 
-  if (!c?.paymentDate) return "No payment made yet";
+  if (!c?.paymentDate) return "--";
 
   return formatDate(new Date(c.paymentDate).toString());
 }
