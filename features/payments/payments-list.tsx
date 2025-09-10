@@ -61,11 +61,16 @@ export function PaymentsList({ projectName, paymentSchedules, paymentDateOptions
             className="flex-1"
           >
             <option value="">Status</option>
-            {[PaymentMethod.UNPAID, PaymentMethod.CASH, PaymentMethod.GCASH, PaymentMethod.BANK_TRANSFER].map((d) => (
-              <option key={d} value={d}>
-                {d.replace("_", " ")}
-              </option>
-            ))}
+            <optgroup label="Unpaid">
+              <option value={PaymentMethod.UNPAID}>Unpaid</option>
+            </optgroup>
+            <optgroup label="Paid by">
+              {[PaymentMethod.CASH, PaymentMethod.GCASH, PaymentMethod.BANK_TRANSFER].map((d) => (
+                <option key={d} value={d}>
+                  {d.replace("_", " ")}
+                </option>
+              ))}
+            </optgroup>
           </SelectNative>
           {paymentDateOptions.length <= 1 ? null : (
             <SelectNative
@@ -75,7 +80,7 @@ export function PaymentsList({ projectName, paymentSchedules, paymentDateOptions
               onChange={handleFilterChange}
               className="flex-1"
             >
-              <option value="">Select date</option>
+              <option value="">Select due date</option>
               {paymentDateOptions.map((d) => (
                 <option key={d.id} value={d.value}>
                   {d.label}
