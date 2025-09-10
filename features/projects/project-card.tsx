@@ -8,7 +8,7 @@ import { ProjectIcon } from "./project-icon";
 
 export function ProjectCard({ project }: { project: Project & { totalAmountPaid: number; percentage: number } }) {
   return (
-    <Card className="hover:bg-background py-4">
+    <Card className="hover:bg-card/70 py-4">
       <div className="flex items-center gap-4 px-4">
         <ProjectIcon iconName={project.icon} color={project.color} />
         <div className="space-y-0">
