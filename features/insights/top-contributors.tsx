@@ -62,12 +62,12 @@ export function TopContributors({
             {topContributors.slice(0, 5).map((c) => (
               <li key={c.id}>
                 <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-semibold">{c.name}</p>
+                  <Link href={`/contributors/${c.id}`} className="group block">
+                    <p className="text-sm font-semibold group-hover:underline">{c.name}</p>
                     <p className="text-muted-foreground text-xs">
                       <span className="font-mono">{formatCurrency(c.contributionAmount)}</span> / month
                     </p>
-                  </div>
+                  </Link>
                   <div>
                     <p className="font-mono text-sm text-green-500">{formatCurrency(c.totalPaid)}</p>
                     <p className="text-muted-foreground text-right text-xs">Total Paid</p>

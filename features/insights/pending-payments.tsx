@@ -38,12 +38,12 @@ export function PendingPayments({
             {pendingPayments.slice(0, 5).map((p) => (
               <li key={p.contributorId}>
                 <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-semibold">{p.contributor.name}</p>
+                  <Link href={`/contributors/${p.contributorId}`} className="group block">
+                    <p className="text-sm font-semibold group-hover:underline">{p.contributor.name}</p>
                     <p className="text-muted-foreground text-xs">
                       due on {formatDate(p.scheduledPaymentDate!.toISOString())}
                     </p>
-                  </div>
+                  </Link>
                   <p className="font-mono text-sm text-red-400">-{formatCurrency(p.contributor.contributionAmount)}</p>
                 </div>
               </li>
