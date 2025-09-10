@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { CheckCircleIcon, PackageIcon, XCircleIcon } from "lucide-react";
 
 import { Contributor, ContributorStatus, PaymentSchedule, Project } from "@/app/generated/prisma";
@@ -74,12 +75,12 @@ export function ContributorList({ project, contributors }: ContributorListProps)
                 <TableRow key={contributor.id} className="hover:bg-background">
                   <TableCell className="text-center font-medium">{index + 1}</TableCell>
                   <TableCell>
-                    <div>
-                      <p className="font-medium">{contributor.name}</p>
+                    <Link href={`/contributors/${contributor.id}`} className="group block">
+                      <p className="font-medium group-hover:underline">{contributor.name}</p>
                       <p className="text-muted-foreground text-xs">
                         {contributor.email ? contributor.email : "No email"}
                       </p>
-                    </div>
+                    </Link>
                   </TableCell>
                   <TableCell className="text-right font-mono">
                     {formatCurrency(contributor.contributionAmount)}

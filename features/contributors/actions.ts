@@ -174,6 +174,7 @@ export const updateContributor = authActionClient
     });
 
     revalidatePath(`/projects/${result.projectId}`);
+    revalidatePath(`/contributors/${result.id}`);
 
     return {
       contributor: result,

@@ -18,7 +18,9 @@ export function PaymentDetails({ payment }: { payment: PaymentSchedule & { contr
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button size="sm">View</Button>
+        <Button size="sm" variant="link">
+          View
+        </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>

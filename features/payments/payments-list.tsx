@@ -1,6 +1,7 @@
 "use client";
 
 import { ChangeEvent } from "react";
+import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { AlertTriangleIcon, PackageIcon } from "lucide-react";
 import { useRouter } from "nextjs-toploader/app";
@@ -124,12 +125,12 @@ export function PaymentsList({ projectName, paymentSchedules, paymentDateOptions
                 <TableRow key={payment.id} className="hover:bg-background">
                   <TableCell className="text-center font-medium">{index + 1}</TableCell>
                   <TableCell>
-                    <div>
-                      <p className="font-medium">{payment.contributor.name}</p>
+                    <Link href={`/contributors/${payment.contributor.id}`} className="group block">
+                      <p className="font-medium group-hover:underline">{payment.contributor.name}</p>
                       <p className="text-muted-foreground text-xs">
                         {payment.contributor.email ? payment.contributor.email : "No email"}
                       </p>
-                    </div>
+                    </Link>
                   </TableCell>
 
                   <TableCell className="text-right font-mono">{formatCurrency(payment.actualAmountPaid)}</TableCell>

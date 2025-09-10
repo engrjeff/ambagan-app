@@ -28,6 +28,7 @@ export const createPaymentRecord = authActionClient
     });
 
     revalidatePath(`/projects/${payment.projectId}`);
+    revalidatePath(`/contributors/${payment.contributorId}`);
 
     return {
       payment,

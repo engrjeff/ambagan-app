@@ -18,8 +18,8 @@ async function ProjectsPage() {
       {/* top bar */}
       <div className="flex items-center">
         <div>
-          <h1 className="text-lg font-semibold">Projects</h1>
-          <p className="text-muted-foreground hidden md:block">View and manage your projects here.</p>
+          <h1 className="font-semibold">Projects</h1>
+          <p className="text-muted-foreground hidden text-sm md:block">View and manage your projects here.</p>
         </div>
         <div className="ml-auto">
           <Button asChild>

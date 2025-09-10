@@ -5,28 +5,28 @@ import { Badge } from "./ui/badge";
 export function PaymentMethodBadge({ paymentMethod }: { paymentMethod: PaymentMethod }) {
   if (paymentMethod === PaymentMethod.UNPAID)
     return (
-      <Badge variant="outline" className="gap-1.5 rounded-full">
+      <Badge variant="outline" className="gap-1.5 rounded-md border-none bg-red-500/20">
         <span className="size-1.5 rounded-full bg-red-500" aria-hidden="true"></span> Unpaid
       </Badge>
     );
 
   if (paymentMethod === PaymentMethod.CASH)
     return (
-      <Badge variant="outline" className="gap-1.5 rounded-full">
+      <Badge variant="outline" className="gap-1.5 rounded-md border-none bg-green-500/20">
         <span className="size-1.5 rounded-full bg-green-500" aria-hidden="true"></span> Cash
       </Badge>
     );
 
   if (paymentMethod === PaymentMethod.BANK_TRANSFER)
     return (
-      <Badge variant="outline" className="gap-1.5 rounded-full">
+      <Badge variant="outline" className="gap-1.5 rounded-md border-none bg-yellow-500/20">
         <span className="size-1.5 rounded-full bg-yellow-500" aria-hidden="true"></span> Bank
       </Badge>
     );
 
   if (paymentMethod === PaymentMethod.GCASH)
     return (
-      <Badge variant="outline" className="rounded-full px-1">
+      <Badge variant="outline" className="gap-1.5 rounded-md border-none bg-blue-500/20 px-1">
         <FaviconImage url="https://new.gcash.com/" size={12} /> GCash
       </Badge>
     );

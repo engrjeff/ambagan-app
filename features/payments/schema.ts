@@ -20,3 +20,8 @@ export const paymentSchema = z.object({
 });
 
 export type PaymentInputs = z.infer<typeof paymentSchema>;
+
+export const fullyPaidSchema = z.object({
+  contributorId: z.string(),
+  paymentScheduleIds: z.array(z.string()),
+});
